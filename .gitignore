@@ -1,0 +1,23 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# PHP
+*.log
+*.cache
+*.tmp
+
+# Composer
+/vendor/
+
+# Node / Frontend
+/node_modules/
+dist/
+build/
+
+# Environment
+.env

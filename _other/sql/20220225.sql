@@ -1,0 +1,1 @@
+ALTER TABLE `pengajuan` ADD `pengajuan_ttd` TEXT NULL AFTER `pengajuan_upload`;
