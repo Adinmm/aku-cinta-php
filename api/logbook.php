@@ -82,9 +82,6 @@ function handleEdit() {
     ]);
 }
 
-/**
- * Upload file helper
- */
 function uploadFiles($inputName) {
     $uploadedFiles = [];
     if (isset($_FILES[$inputName])) {
@@ -109,9 +106,6 @@ function uploadFiles($inputName) {
     return $uploadedFiles;
 }
 
-/**
- * Handle request utama
- */
 function handleRequest() {
     $action = $_POST['action'] ?? '';
     try {
@@ -133,5 +127,5 @@ function handleRequest() {
     }
 }
 
-// Jalankan
+
 handleRequest();
