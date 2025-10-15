@@ -21,8 +21,8 @@ class CLogbook extends Databases {
 
     // Tambah logbook baru
     public function insertLogbook($data) {
-        // Pastikan foto selalu berupa array JSON
-        $foto = isset($data['foto']) && $data['foto'] ? [$data['foto']] : [""];
+        // Pastikan foto selalu berupa array
+        $foto = isset($data['foto']) && is_array($data['foto']) ? $data['foto'] : [];
 
         return $this->insert(
             'logbook',
@@ -35,5 +35,21 @@ class CLogbook extends Databases {
     // Hapus logbook
     public function deleteLogbook($id) {
         return $this->delete('logbook', 'id', $id);
+    }
+    public function updateLogbook($id, $data) {
+        // Pastikan foto selalu berupa array
+        if (isset($data['foto']) && is_array($data['foto'])) {
+            $data['foto'] = json_encode($data['foto']);
+        }
+
+        // Hanya update field yang ada di array
+        return $this->update('logbook', $data, 'id', $id);
+    }
+
+    public function getLogbookById($id) {
+        $query = "SELECT * FROM logbook WHERE id = ?";
+        $this->_STH = $this->_DBH->prepare($query);
+        $this->_STH->execute([$id]);
+        return $this->_STH->fetch(PDO::FETCH_ASSOC); // ambil satu row
     }
 }

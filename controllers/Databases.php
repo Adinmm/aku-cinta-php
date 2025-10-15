@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LRsoft Corp.
  * https://lrsoft.id
@@ -6,8 +7,7 @@
  * Author : Zaf
  */
 
-class Databases
-{
+class Databases {
     /** @var PDO $_DBH */
     protected $_DBH;
 
@@ -17,8 +17,7 @@ class Databases
     /** @var self $_i */
     private static $_i;
 
-    public static function _gi()
-    {
+    public static function _gi() {
         if (!isset(self::$_i)) {
             self::$_i = new self();
         }
@@ -30,8 +29,7 @@ class Databases
      *
      * @author Zaf
      */
-    function __construct()
-    {
+    function __construct() {
         $this->_connect();
     }
 
@@ -43,8 +41,7 @@ class Databases
      * @param string $user
      * @param string $pass
      */
-    function _connect($host = DB_HOST, $name = DB_NAME, $user = DB_USER, $pass = DB_PASS)
-    {
+    function _connect($host = DB_HOST, $name = DB_NAME, $user = DB_USER, $pass = DB_PASS) {
 
         try {
             $this->_DBH = new PDO('mysql:host=' . $host . ';dbname=' . $name, $user, $pass, array(
@@ -53,7 +50,6 @@ class Databases
         } catch (PDOException $e) {
             exit($e->getMessage());
         }
-
     }
 
 
@@ -63,8 +59,7 @@ class Databases
      * @param $query
      * @return int
      */
-    protected function _exec($query)
-    {
+    protected function _exec($query) {
         try {
             return $this->_DBH->exec($query);
         } catch (PDOException $e) {
@@ -81,8 +76,7 @@ class Databases
      * @param string $class
      * @return array|mixed
      */
-    protected function _fetch($query, $all = false, $mode = PDO::FETCH_ASSOC, $class = '')
-    {
+    protected function _fetch($query, $all = false, $mode = PDO::FETCH_ASSOC, $class = '') {
         try {
 
             /**
@@ -102,7 +96,6 @@ class Databases
                 return $all ?
                     $this->_DBH->query($query)->fetchAll($mode, $class) :
                     $this->_DBH->query($query)->fetchObject($class);
-
         } catch (PDOException $e) {
             exit($e->getMessage());
         }
@@ -114,8 +107,7 @@ class Databases
      * @param $query
      * @return int
      */
-    protected function _rows($query)
-    {
+    protected function _rows($query) {
         try {
             return $this->_DBH->query($query)->rowCount();
         } catch (PDOException $e) {
@@ -129,8 +121,7 @@ class Databases
      * @param $query
      * @return int
      */
-    protected function _fields($query)
-    {
+    protected function _fields($query) {
         try {
             return $this->_DBH->query($query)->columnCount();
         } catch (PDOException $e) {
@@ -148,8 +139,7 @@ class Databases
      * @return bool $res
      * @author Zaf
      */
-    protected function insert($table, $column = array(), $value = array(), $ignore_on_duplicate = false)
-    {
+    protected function insert($table, $column = array(), $value = array(), $ignore_on_duplicate = false) {
 
         $values = array();
         $number_of_value = count($value);
@@ -169,7 +159,6 @@ class Databases
         } catch (PDOException $e) {
             exit($e->getMessage());
         }
-
     }
 
     /**
@@ -182,26 +171,31 @@ class Databases
      * @return bool
      * @author Zaf
      */
-    protected function update($table, $column = array(), $value = array(), $condition = array())
-    {
+    protected function update($table, $data = array(), $keyField = '', $keyValue = '') {
+        $set = [];
+        $params = [];
 
-        $query = 'UPDATE ' . $table . ' SET ';
+        foreach ($data as $field => $value) {
+            $set[] = "$field = ?";
+            $params[] = $value;
+        }
 
-        foreach ($column as $k => $c)
-            $query .= $c . ' = ?' . ($c != end($column) ? ', ' : '');
+        $sql = "UPDATE $table SET " . implode(', ', $set);
 
-        if (!empty($condition))
-            $query .= ' WHERE ' . $condition[0] . ' = "' . $condition[1] . '"';
+        if ($keyField && $keyValue !== '') {
+            $sql .= " WHERE $keyField = ?";
+            $params[] = $keyValue; // tambahkan ID ke array params
+        }
 
-        $this->_STH = $this->_DBH->prepare($query);
+        $this->_STH = $this->_DBH->prepare($sql);
 
         try {
-            return $this->_STH->execute($value);
+            return $this->_STH->execute($params); // <-- pastikan semua parameter ada di array
         } catch (PDOException $e) {
             exit($e->getMessage());
         }
-
     }
+
 
     /**
      * fungsi buat delete value
@@ -212,16 +206,13 @@ class Databases
      * @return bool
      * @author Zaf
      */
-    protected function delete($table, $column, $value)
-    {
+    protected function delete($table, $column, $value) {
         $query = 'DELETE FROM `' . $table . '` WHERE `' . $column . '` = "' . $value . '"';
         return $this->_exec($query);
     }
 
 
-    public function fetchPublic($query, $multi = false){
+    public function fetchPublic($query, $multi = false) {
         return $this->_fetch($query, $multi);
     }
-
-
 }

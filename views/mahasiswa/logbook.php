@@ -67,7 +67,8 @@ $logbooks = CLogbook::_gi()->getAll('12345');
                         <td style="text-align:center;">
                             <div style="display: flex; justify-content: center; gap: 5px;">
 
-                                <button class="btn btn-warning btn-sm" onclick="editLogbook(<?= $lb['id'] ?>)">Edit</button>
+                                <button class="btn btn-warning btn-sm" onclick="editLogbook(<?= $lb['id'] ?>, this)">Edit</button>
+
                                 <button class="btn btn-danger btn-sm" onclick="deleteLogbook(<?= $lb['id'] ?>, this)">Hapus</button>
                             </div>
                         </td>
@@ -78,18 +79,14 @@ $logbooks = CLogbook::_gi()->getAll('12345');
     </table>
 </div>
 
-
-
-
 <!-- Modal Tambah Logbook -->
-
 <div id="modalTambah" class="modal">
     <div class="modal-content">
         <div class="modal-header">
             <h4>Tambah Logbook</h4>
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" onclick="closeModalTambah()">&times;</span>
         </div>
-        <form id="logbookForm" method="post" enctype="multipart/form-data">
+        <form id="logbookForm" method="post" enctype="multipart/form-data" action="proses_tambah_logbook.php">
             <div class="modal-body">
                 <div class="form-group">
                     <label for="tanggal">Tanggal</label>
@@ -109,34 +106,80 @@ $logbooks = CLogbook::_gi()->getAll('12345');
                 </div>
                 <div class="form-group">
                     <label for="foto">Foto</label>
-                    <input type="file" name="foto" id="foto" class="form-control">
+                    <input type="file" name="foto[]" id="foto" class="form-control" multiple>
+                    <small class="text-muted">Bisa memilih lebih dari satu foto</small>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModalTambah()">Batal</button>
                 <button type="submit" class="btn btn-success">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- Modal Edit Logbook -->
+<div id="modalEdit" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Edit Logbook</h4>
+            <span class="close" onclick="closeEditModal()">&times;</span>
+        </div>
+        <form id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
+            <input type="hidden" name="id" id="edit_id">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="edit_tanggal">Tanggal</label>
+                    <input type="date" name="tanggal" id="edit_tanggal" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit_jkem">JKEM</label>
+                    <input type="text" name="jkem" id="edit_jkem" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit_uraian">Uraian</label>
+                    <textarea name="uraian" id="edit_uraian" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit_target">Target</label>
+                    <input type="text" name="target" id="edit_target" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Foto Lama</label>
+                    <div id="edit_foto_lama" class="mb-2"></div>
+                </div>
+                <div class="form-group">
+                    <label for="edit_foto">Tambah Foto Baru</label>
+                    <input type="file" name="foto[]" id="edit_foto" class="form-control" multiple>
+                    <small class="text-muted">Bisa memilih lebih dari satu foto</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+                <button type="submit" class="btn btn-success">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 <style>
-    /* Modal overlay */
+    /* Semua modal memakai class sama */
     .modal {
         display: none;
         align-items: center;
+        justify-content: center;
         position: fixed;
         z-index: 999;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
-        overflow: auto;
+        overflow-y: auto;
         background-color: rgba(0, 0, 0, 0.5);
         animation: fadeIn 0.3s;
     }
 
-    /* Modal content */
     .modal-content {
         background-color: #fff;
         margin: 50px auto;
@@ -148,13 +191,13 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         animation: slideIn 0.3s;
     }
 
-    /* Header */
     .modal-header {
         padding: 20px;
         border-bottom: 1px solid #eee;
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
     }
 
     .modal-header h4 {
@@ -162,8 +205,9 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         font-size: 1.3rem;
     }
 
-    /* Close button */
     .close {
+        position: absolute;
+        right: 20px;
         font-size: 1.5rem;
         cursor: pointer;
         color: #999;
@@ -174,7 +218,6 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         color: #333;
     }
 
-    /* Body */
     .modal-body {
         padding: 20px;
     }
@@ -185,8 +228,8 @@ $logbooks = CLogbook::_gi()->getAll('12345');
 
     .form-group label {
         font-weight: 600;
-        margin-bottom: 5px;
         display: block;
+        margin-bottom: 5px;
     }
 
     .form-control {
@@ -203,7 +246,6 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         box-shadow: 0 0 3px rgba(40, 167, 69, 0.3);
     }
 
-    /* Footer */
     .modal-footer {
         padding: 15px 20px;
         border-top: 1px solid #eee;
@@ -238,7 +280,6 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         background-color: #218838;
     }
 
-    /* Animations */
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -262,17 +303,22 @@ $logbooks = CLogbook::_gi()->getAll('12345');
     }
 </style>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const modal = document.getElementById('modalTambah');
-    const form = document.getElementById('logbookForm');
-    const tbody = document.getElementById('logbookTableBody');
 
-    const openModal = () => modal.style.display = 'flex';
-    const closeModal = () => {
-        modal.style.display = 'none';
+<script>
+    const form = document.getElementById('logbookForm');
+    const modal = document.getElementById('modalTambah');
+    const tbody = document.getElementById('logbookTableBody');
+    const logbookEdit = document.getElementById('logbookEditForm');
+
+    function closeModalTambah() {
+        document.getElementById('modalTambah').style.display = 'none';
         form.reset();
-    };
+    }
+
+    function openModal() {
+        modal.style.display = 'flex';
+    }
+
 
     window.onclick = (event) => {
         if (event.target === modal) closeModal();
@@ -282,48 +328,51 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.addEventListener('click', openModal);
     });
 
-   form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    const formData = new FormData(form);
-    formData.append('action', 'insert');
+        const formData = new FormData(form);
+        formData.append('action', 'insert');
 
-    // ===== LOG SEMUA INPUTAN =====
-    console.log('FormData values:');
-    for (const [key, value] of formData.entries()) {
-        if (value instanceof File) {
-            console.log(`${key}: File { name: ${value.name}, size: ${value.size} }`);
-        } else {
-            console.log(`${key}: ${value}`);
+
+        for (const [key, value] of formData.entries()) {
+            if (value instanceof File) {
+                console.log(`${key}: File { name: ${value.name}, size: ${value.size} }`);
+            } else {
+                console.log(`${key}: ${value}`);
+            }
         }
-    }
-    // ==============================
 
-    try {
-        const res = await fetch('http://localhost:8080/api/logbook.php', {
-            method: 'POST',
-            body: formData
-        });
 
-        const text = await res.text();
-        console.log('Response:', text);
+        try {
+            const res = await fetch('http://localhost:8080/api/logbook.php', {
+                method: 'POST',
+                body: formData
+            });
 
-        let data;
-        try { data = JSON.parse(text); } 
-        catch { throw new Error("Response bukan JSON! Cek PHP."); }
+            const text = await res.text();
+            console.log('Response:', text);
 
-        if (data.status === 'success') {
-            closeModal();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch {
+                throw new Error("Response bukan JSON! Cek PHP.");
+            }
 
-            const emptyRow = document.getElementById('emptyRow');
-            if (emptyRow) emptyRow.remove();
+            if (data.status === 'success') {
+                alert('✅ Logbook berhasil disimpan!');
+                location.reload();
 
-            const fotoCell = data.logbook.foto
-                ? `<img src="http://localhost:8080/uploads/${data.logbook.foto}" alt="Foto" width="60" class="rounded">`
-                : '-';
+                const emptyRow = document.getElementById('emptyRow');
+                if (emptyRow) emptyRow.remove();
 
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
+                const fotoCell = data.logbook.foto ?
+                    `<img src="http://localhost:8080/uploads/${data.logbook.foto}" alt="Foto" width="60" class="rounded">` :
+                    '-';
+
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
                 <td>${tbody.children.length + 1}</td>
                 <td>${data.logbook.tanggal}</td>
                 <td>${data.logbook.jkem}</td>
@@ -334,46 +383,129 @@ document.addEventListener("DOMContentLoaded", () => {
                     <button class="btn btn-danger btn-sm" onclick="deleteLogbook(${data.logbook.id}, this)">Hapus</button>
                 </td>
             `;
-            tbody.appendChild(newRow);
-        } else {
-            alert('❌ Gagal menyimpan logbook: ' + (data.message || 'Terjadi kesalahan.'));
+                tbody.appendChild(newRow);
+            } else {
+                alert('❌ Gagal menyimpan logbook: ' + (data.message || 'Terjadi kesalahan.'));
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert('Terjadi kesalahan! Lihat console.');
+        }
+    });
+
+
+    async function deleteLogbook(id, btn) {
+        if (!confirm('Yakin ingin menghapus logbook ini?')) return;
+
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('id', id);
+
+        try {
+            const res = await fetch('http://localhost:8080/api/logbook.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const text = await res.text();
+            console.log('Delete response:', text);
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch {
+                throw new Error("Response delete bukan JSON!");
+            }
+
+            if (data.status === 'success') {
+                btn.closest('tr').remove();
+            } else alert('❌ Gagal menghapus logbook!');
+        } catch (err) {
+            console.error(err);
+            alert('Terjadi kesalahan saat menghapus!');
+        }
+    }
+
+
+
+    function editLogbook(id) {
+        // Ambil data logbook berdasarkan ID (bisa dari array JS atau fetch API)
+        const logbook = <?= json_encode($logbooks) ?>.find(lb => lb.id == id);
+        if (!logbook) {
+            alert('Logbook tidak ditemukan!');
+            return;
         }
 
-    } catch (err) {
-        console.error(err);
-        alert('Terjadi kesalahan! Lihat console.');
+        // Isi form edit dengan data logbook
+        document.getElementById('edit_id').value = logbook.id;
+        document.getElementById('edit_tanggal').value = logbook.tanggal;
+        document.getElementById('edit_jkem').value = logbook.jkem;
+        document.getElementById('edit_uraian').value = logbook.uraian;
+        document.getElementById('edit_target').value = logbook.target;
+
+        // Tampilkan foto lama
+        const fotoLamaDiv = document.getElementById('edit_foto_lama');
+        fotoLamaDiv.innerHTML = '';
+        if (logbook.foto) {
+            const fotos = JSON.parse(logbook.foto);
+            fotos.forEach(foto => {
+                const img = document.createElement('img');
+                img.src = 'http://localhost:8080/uploads/' + foto;
+                img.alt = 'Foto';
+                img.style.width = '50px';
+                img.style.height = '50px';
+                img.style.margin = '2px';
+                img.style.borderRadius = '5px';
+                fotoLamaDiv.appendChild(img);
+            });
+        } else {
+            fotoLamaDiv.innerText = 'Tidak ada foto.';
+        }
+
+
+        openModalEdit();
     }
-});
 
-});
+    logbookEdit.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(logbookEdit);
+        formData.append('action', 'edit');
 
-async function deleteLogbook(id, btn) {
-    if (!confirm('Yakin ingin menghapus logbook ini?')) return;
+        try {
+            const res = await fetch('http://localhost:8080/api/logbook.php', {
+                method: 'POST',
+                body: formData
+            });
 
-    const formData = new FormData();
-    formData.append('action','delete');
-    formData.append('id', id);
+            const text = await res.text();
+            console.log('Update response:', text);
 
-    try {
-        const res = await fetch('http://localhost:8080/api/logbook.php', {
-            method: 'POST',
-            body: formData
-        });
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch {
+                throw new Error("Response update bukan JSON!");
+            }
 
-        const text = await res.text();
-        console.log('Delete response:', text);
+            if (data.status === 'success') {
+                alert('✅ Logbook berhasil diubah!');
+                location.reload();
+            } else alert('❌ Gagal mengubah logbook!');
+        } catch (err) {
+            console.error(err);
+            alert('Terjadi kesalahan saat mengubah!');
+        }
+    });
 
-        let data;
-        try { data = JSON.parse(text); } 
-        catch { throw new Error("Response delete bukan JSON!"); }
 
-        if (data.status === 'success') {
-            btn.closest('tr').remove();
-        } else alert('❌ Gagal menghapus logbook!');
-    } catch (err) {
-        console.error(err);
-        alert('Terjadi kesalahan saat menghapus!');
+
+    function closeEditModal() {
+        document.getElementById('modalEdit').style.display = 'none';
     }
-}
 
+    const openModalEdit = () => {
+        document.getElementById('modalEdit').style.display = 'flex';
+
+    }
 </script>
