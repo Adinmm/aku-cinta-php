@@ -8,6 +8,7 @@ services:
       - "8080:80"
     volumes:
       - ./:/var/www/html    # mount source code agar hot reload
+      - ./uploads:/var/www/html/uploads   # <-- mount folder uploads
       - ./_other/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
     depends_on:
       - db
