@@ -16,7 +16,7 @@ header('Content-Type: application/json');
 
 
 function handleInsert() {
-    $nim = '12345';
+    $nim = $_GET['nim'] ?? '12345';
     $tanggal = $_POST['tanggal'] ?? null;
     $jkem = $_POST['jkem'] ?? null;
     $uraian = $_POST['uraian'] ?? null;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LRsoft Corp.
  * https://lrsoft.id
@@ -21,6 +22,7 @@ else $_menus = array(
     array(Helpers::d_pengajuan, 'fa-list-alt'),
     array(Helpers::d_seminar, 'fa-slideshare'),
     array(Helpers::d_tempat, 'fa-map-marker'),
+    array('logbook', 'fa-book'), // Tambahkan menu Logbook setelah Tempat
 );
 
 /** @var MDosen $obj_dosen */
@@ -33,15 +35,15 @@ $obj_dosen = Sessions::_gi()->_get(Helpers::dir_dosen, 1); ?>
                 <div class="dropdown profile-element text-center">
                     <a href="<?php echo Helpers::_a(Helpers::page_beranda); ?>">
                         <img alt="image" class="img-rounded" src="<?php echo $obj_dosen->getDosenFoto2(100, 100); ?>"
-                             style="max-width: 75px"/>
+                            style="max-width: 75px" />
                         <span class="clear">
-                            <br/>
+                            <br />
                             <span class="block m-t-xs">
                                 <strong class="font-bold">
                                     <?php echo $obj_dosen->getDosenNama(); ?>
                                 </strong>
                             </span>
-                            <br/>
+                            <br />
                             <span class="text-muted text-xs block">
                                 <?php echo $obj_dosen->getDosenKode(); ?>
                             </span>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LRsoft Corp.
  * https://lrsoft.id
@@ -17,6 +18,8 @@ $_menus = array(
     array(Helpers::op_tempat, 'fa-map-marker'),
     array(Helpers::op_statistik, 'fa-pie-chart'),
     array(Helpers::op_pengaturan, 'fa-cogs'),
+    array('logbook', 'fa-book'),
+
 );
 
 /** @var MOperator $obj_operator */
@@ -29,21 +32,21 @@ $obj_operator = Sessions::_gi()->_get($_dir, 1); ?>
                 <div class="dropdown profile-element text-center">
                     <a href="<?php echo Helpers::_a(Helpers::page_beranda); ?>">
                         <img alt="image" class="img-circle" src="<?php echo URI_IMG_PATH; ?>/logo.png"
-                             style="max-width: 75px"/>
+                            style="max-width: 75px" />
                         <span class="clear">
-                            <br/>
+                            <br />
                             <span class="block m-t-xs">
                                 <strong class="font-bold">
                                     <?php echo $obj_operator->getOperatorNama(); ?>
                                 </strong>
                             </span>
-                            <br/>
+                            <br />
                             <span class="text-muted text-xs block">
                                 <?php echo $obj_operator->getOperatorUsername(); ?>
                             </span>
-                            <br/>
+                            <br />
                             <a href="<?php echo Helpers::_a_op(Helpers::page_akun); ?>"
-                               class="btn btn-sm btn-warning btn-outline">
+                                class="btn btn-sm btn-warning btn-outline">
                                 <i class="fa fa-pencil"></i>&nbsp;&nbsp;Akun
                             </a>
                         </span>
