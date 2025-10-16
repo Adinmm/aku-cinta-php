@@ -15,13 +15,14 @@ $logbooks = CLogbook::_gi()->getAll('12345');
     <table class="table table-striped mt-2 width:100%;">
         <thead>
             <tr>
-                <th style="text-align:start;">No</th>
-                <th style="text-align:start;">Tanggal</th>
-                <th style="text-align:start;">JKEM</th>
-                <th style="text-align:start;">Uraian</th>
-                <th style="text-align:start;">Target</th>
-                <th style="text-align:center;">Foto</th>
-                <th style="text-align:center;">Aksi</th>
+                <th style="width:5%; text-align:center;">No</th>
+                <th style="width:12%; text-align:center;">Tanggal</th>
+                <th style="min-width:450px; text-align:start;">JKEM</th> <!-- Bisa melebar -->
+                <th style="min-width:350px; text-align:start;">Uraian</th>
+                <th style="min-width:250px; text-align:start;">Target</th>
+                <th style="width:15%; text-align:center;">Foto</th>
+                <th style="width:15%; text-align:center;">Aksi</th>
+
             </tr>
         </thead>
         <tbody id="logbookTableBody">
@@ -32,18 +33,16 @@ $logbooks = CLogbook::_gi()->getAll('12345');
             <?php else: ?>
                 <?php foreach ($logbooks as $i => $lb): ?>
                     <tr>
-                        <td style="text-align:start;"><?= $i + 1 ?></td>
-                        <td style="text-align:start; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars($lb['tanggal']) ?></td>
-                        <td style="text-align:start; "><?= htmlspecialchars($lb['jkem']) ?></td>
-                        <td style=" text-align:start;" title="<?= htmlspecialchars($lb['uraian']) ?>">
+                        <td style="text-align:center;"><?= $i + 1 ?></td>
+                        <td style="text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
+                        <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?></td> <!-- Tampil penuh -->
+                        <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
                             <?= htmlspecialchars($lb['uraian']) ?>
                         </td>
-                        <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center;" title="<?= htmlspecialchars($lb['target']) ?>">
+                        <td style="text-align:left;" title="<?= htmlspecialchars($lb['target']) ?>">
                             <?= htmlspecialchars($lb['target']) ?>
                         </td>
-
-                        <!-- Foto -->
-                        <td style="text-align:center; width: 100px;">
+                        <td style="text-align:center;">
                             <?php
                             if (!empty($lb['foto'])) {
                                 $fotos = json_decode($lb['foto'], true);
