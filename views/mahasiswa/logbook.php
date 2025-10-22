@@ -5,87 +5,163 @@ include_once __DIR__ . '/../../controllers/CLogbook.php';
 $logbooks = CLogbook::_gi()->getAll('12345');
 ?>
 
-<div class="mb-3 text-end">
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambah">
-        <i class="bi bi-plus-circle"></i> Tambah Logbook
-    </button>
-</div>
+<head>
 
-<div style="overflow-x:auto;">
-    <table class="table table-striped mt-2 width:100%;">
-        <thead>
-            <tr>
-                <th style="width:5%; text-align:center;">No</th>
-                <th style="width:12%; text-align:center;">Tanggal</th>
-                <th style="min-width:450px; text-align:start;">JKEM</th> <!-- Bisa melebar -->
-                <th style="min-width:350px; text-align:start;">Uraian</th>
-                <th style="min-width:250px; text-align:start;">Target</th>
-                <th style="width:15%; text-align:center;">Foto</th>
-                <th style="width:15%; text-align:center;">Aksi</th>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
 
-            </tr>
-        </thead>
-        <tbody id="logbookTableBody">
-            <?php if (empty($logbooks)): ?>
-                <tr id="emptyRow">
-                    <td colspan="7" style="text-align:start;">Belum ada data logbook.</td>
-                </tr>
-            <?php else: ?>
-                <?php foreach ($logbooks as $i => $lb): ?>
+<div style="
+    border: 1px solid #ccc;
+  
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    background-color: #fff;
+  ">
+
+    <p style="padding: 2rem; font-size: 1.5rem; border-bottom: solid 1px #ccc; font-weight: bold;">
+        Periode 2025 (Ganjil)
+    </p>
+
+    <div style="  padding: 2rem;">
+
+        <div style="display: flex; align-items: end; gap: 10px;" class="mb-3 text-end">
+
+
+            <button
+                type="button"
+                style="
+             padding: 0 10px;
+             display: inline-flex;
+             align-items: center;
+             gap: 6px;
+             cursor: pointer;
+             border: solid 1px #3954f0ff;
+             border-radius: 3px;
+             background-color: #3954f0ff;
+             color: white;
+             height: 25px;
+        
+         ">
+
+                <span style="font-size:1.3rem;">Kelompok</span>
+            </button>
+
+
+            <button
+                style="
+             padding: 7px 14px;
+             border: 1px solid #22b0b0ff;
+             background-color: transparent;
+             color: #22b0b0ff;
+             border-radius: 6px;
+             display: flex;
+             align-items: center;
+             gap: 5px;
+             cursor: pointer;
+         "
+                data-bs-toggle="modal"
+                data-bs-target="#modalTambah">
+                <i class="bi bi-plus" style="font-size: 2rem; line-height: 1; font-weight: 700;"></i>
+                <p style="margin: 0; line-height: 1; font-size: 1.5rem;">Tambah</p>
+            </button>
+
+
+
+        </div>
+
+        <div style="overflow-x:auto; ">
+            <table class="table table-striped mt-2 width:100%;">
+                <thead>
                     <tr>
-                        <td style="text-align:center;"><?= $i + 1 ?></td>
-                        <td style="text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
-                        <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?></td> <!-- Tampil penuh -->
-                        <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
-                            <?= htmlspecialchars($lb['uraian']) ?>
-                        </td>
-                        <td style="text-align:left;" title="<?= htmlspecialchars($lb['target']) ?>">
-                            <?= htmlspecialchars($lb['target']) ?>
-                        </td>
-                        <td style="text-align:center;">
-                            <?php
-                            if (!empty($lb['foto'])) {
-                                $fotos = json_decode($lb['foto'], true);
-                                if (is_array($fotos) && count($fotos) > 0) {
-                                    foreach ($fotos as $foto) {
-                                        $filePath = 'http://localhost:8080/uploads/' . $foto;
-                                        echo '<a href="' . htmlspecialchars($filePath) . '" download title="Download foto">';
-                                        echo '<img src="' . htmlspecialchars($filePath) . '" alt="Foto" style="width:50px;height:50px;margin:2px;border-radius:5px;">';
-                                        echo ' <i class="fa fa-download"></i>';
-                                        echo '</a><br>';
-                                    }
-                                } else {
-                                    echo '-';
-                                }
-                            } else {
-                                echo '-';
-                            }
-                            ?>
-                        </td>
+                        <th style="width:5%; text-align:center;">No</th>
+                        <th style="width:12%; text-align:center;">Tanggal</th>
+                        <th style="min-width:10px; text-align:start;">JKEM</th> <!-- Bisa melebar -->
+                        <th style="min-width:450px; text-align:start;">Uraian</th>
+                        <th style="min-width:350px; text-align:start;">Target</th>
+                        <th style="width:5%; text-align:center;">Foto</th>
+                        <th style="width:10%; text-align:center;">#</th>
 
-                        <td style="text-align:center;">
-                            <div style="display: flex; justify-content: center; gap: 5px;">
-
-                                <button class="btn btn-warning btn-sm" onclick="editLogbook(<?= $lb['id'] ?>, this)">Edit</button>
-
-                                <button class="btn btn-danger btn-sm" onclick="deleteLogbook(<?= $lb['id'] ?>, this)">Hapus</button>
-                            </div>
-                        </td>
                     </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </tbody>
-    </table>
+                </thead>
+                <tbody id="logbookTableBody">
+                    <?php if (empty($logbooks)): ?>
+                        <tr id="emptyRow">
+                            <td colspan="7" style="text-align:start;">Belum ada data logbook.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($logbooks as $i => $lb): ?>
+                            <tr>
+                                <td style="text-align:center;"><?= $i + 1 ?></td>
+                                <td style="text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
+                                <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?></td> <!-- Tampil penuh -->
+                                <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
+                                    <?= htmlspecialchars($lb['uraian']) ?>
+                                </td>
+                                <td style="text-align:left;" title="<?= htmlspecialchars($lb['target']) ?>">
+                                    <?= htmlspecialchars($lb['target']) ?>
+                                </td>
+                                <td style="text-align:center;">
+                                    <?php
+                                    if (!empty($lb['foto'])) {
+                                        $fotos = json_decode($lb['foto'], true);
+
+                                        if (is_array($fotos) && count($fotos) > 0) {
+                                            $i = 1; // mulai dari 1
+
+                                            foreach ($fotos as $foto) {
+                                                $filePath = 'http://localhost:8080/uploads/' . htmlspecialchars($foto);
+
+                                                echo '<a href="' . $filePath . '" download title="Download foto">';
+                                                echo '<div style="display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 5px;">';
+                                                echo '<i class="fa fa-download" style="font-size:16px; line-height:1;"></i>';
+                                                echo '<p style="margin:0; line-height:1;">#' . $i . '</p>';
+                                                echo '</div>';
+                                                echo '</a>';
+
+                                                $i++;
+                                            }
+                                        } else {
+                                            echo '-';
+                                        }
+                                    } else {
+                                        echo '-';
+                                    }
+                                    ?>
+                                </td>
+
+
+                                <td style="text-align:center;">
+                                    <div style="display: flex; justify-content: center; gap: 5px; flex-wrap: wrap;">
+
+                                        <button style="padding: 5px 10px; border:1px solid blue; background-color: transparent; color: blue; border-radius: 6px;" onclick="editLogbook(<?= $lb['id'] ?>, this)"><i class="fa fa-pencil"></i> Edit</button>
+
+                                        <button style="padding: 5px 10px; border:1px solid red; background-color: transparent; color: red; border-radius: 6px;" onclick="deleteLogbook(<?= $lb['id'] ?>, this)"><i class="fa fa-trash"></i> Hapus</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
+
+
 
 <!-- Modal Tambah Logbook -->
-<div id="modalTambah" class="modal">
-    <div class="modal-content">
+<div style="overflow: auto;" id="modalTambah" class="modal">
+    <div class="modal-content ">
         <div class="modal-header">
-            <h4>Tambah Logbook</h4>
+            <div>
+
+                <h4 style="text-align: center; font-size: 3rem; font-weight: bold; padding-bottom: 5px;">Tambah</h4>
+                <p style="text-align: center;">Logbook Kelompok</p>
+            </div>
             <span class="close" onclick="closeModalTambah()">&times;</span>
         </div>
-        <form id="logbookForm" method="post" enctype="multipart/form-data" action="proses_tambah_logbook.php">
+        <form style="padding: 0 4rem;" id="logbookForm" method="post" enctype="multipart/form-data" action="proses_tambah_logbook.php">
             <div class="modal-body">
                 <div class="form-group">
                     <label for="tanggal">Tanggal</label>
@@ -93,76 +169,165 @@ $logbooks = CLogbook::_gi()->getAll('12345');
                 </div>
                 <div class="form-group">
                     <label for="jkem">JKEM</label>
-                    <input type="text" name="jkem" id="jkem" class="form-control" placeholder="Masukkan JKEM" required>
+                    <div style="display: flex; align-items: center;">
+                        <input
+                            type="number"
+                            name="jkem"
+                            id="jkem"
+                            class="form-control"
+                            placeholder="Masukkan JKEM"
+                            required
+                            style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                        <span
+                            style="
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-left: none;
+        padding: 6px 12px;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+        font-size: 14px;
+        color: #333;
+      ">
+                            Jam
+                        </span>
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label for="uraian">Uraian</label>
-                    <textarea name="uraian" id="uraian" class="form-control" placeholder="Masukkan uraian" required></textarea>
+                    <textarea name="uraian" id="uraian" class="form-control" placeholder="Masukkan uraian" rows="5" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="target">Target</label>
-                    <input type="text" name="target" id="target" class="form-control" placeholder="Masukkan target" required>
+                    <textarea name="target" id="target" class="form-control" placeholder="Masukkan target" rows="5" required></textarea>
+
                 </div>
+
+
                 <div class="form-group">
-                    <label for="foto">Foto</label>
-                    <input type="file" name="foto[]" id="foto" class="form-control" multiple>
-                    <small class="text-muted">Bisa memilih lebih dari satu foto</small>
+                    <label for="foto1">Foto 1</label>
+                    <input type="file" name="foto1" id="foto1" class="form-control" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModalTambah()">Batal</button>
-                <button type="submit" class="btn btn-success">Simpan</button>
-            </div>
+
+                <div class="form-group">
+                    <label for="foto2">Foto 2</label>
+                    <input type="file" name="foto2" id="foto2" class="form-control" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="foto3">Foto 3</label>
+                    <input type="file" name="foto3" id="foto3" class="form-control" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModalTambah()">Batal</button>
+                    <button type="submit" class="btn btn-success">Simpan</button>
+                </div>
         </form>
     </div>
 </div>
 
+
 <!-- Modal Edit Logbook -->
-<div id="modalEdit" class="modal">
+<div style="overflow: auto;" id="modalEdit" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h4>Edit Logbook</h4>
+            <div>
+                <h4 style="text-align: center; font-size: 3rem; font-weight: bold; padding-bottom: 5px;">Edit</h4>
+                <p style="text-align: center;">Logbook Kelompok</p>
+            </div>
             <span class="close" onclick="closeEditModal()">&times;</span>
         </div>
-        <form id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
+
+        <form style="padding: 0 4rem;" id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
             <input type="hidden" name="id" id="edit_id">
+
             <div class="modal-body">
                 <div class="form-group">
                     <label for="edit_tanggal">Tanggal</label>
-                    <input type="date" name="tanggal" id="edit_tanggal" class="form-control">
+                    <input type="date" name="tanggal" id="edit_tanggal" class="form-control" required>
                 </div>
+
                 <div class="form-group">
                     <label for="edit_jkem">JKEM</label>
-                    <input type="text" name="jkem" id="edit_jkem" class="form-control">
+                    <div style="display: flex; align-items: center;">
+                        <input
+                            type="number"
+                            name="jkem"
+                            id="edit_jkem"
+                            class="form-control"
+                            placeholder="Masukkan JKEM"
+                            required
+                            style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                        <span
+                            style="
+                background-color: #e9ecef;
+                border: 1px solid #ced4da;
+                border-left: none;
+                padding: 6px 12px;
+                border-top-right-radius: 6px;
+                border-bottom-right-radius: 6px;
+                font-size: 14px;
+                color: #333;
+              ">
+                            Jam
+                        </span>
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label for="edit_uraian">Uraian</label>
-                    <textarea name="uraian" id="edit_uraian" class="form-control"></textarea>
+                    <textarea name="uraian" id="edit_uraian" class="form-control" placeholder="Masukkan uraian" rows="5" required></textarea>
                 </div>
+
                 <div class="form-group">
                     <label for="edit_target">Target</label>
-                    <input type="text" name="target" id="edit_target" class="form-control">
+                    <textarea name="target" id="edit_target" class="form-control" placeholder="Masukkan target" rows="5" required></textarea>
                 </div>
+
                 <div class="form-group">
-                    <label>Foto Lama</label>
-                    <div id="edit_foto_lama" class="mb-2"></div>
+                    <label for="edit_foto1">Foto 1 (Baru)</label>
+                    <input type="file" name="foto1" id="edit_foto1" class="form-control" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
                 </div>
+
                 <div class="form-group">
-                    <label for="edit_foto">Tambah Foto Baru</label>
-                    <input type="file" name="foto[]" id="edit_foto" class="form-control" multiple>
-                    <small class="text-muted">Bisa memilih lebih dari satu foto</small>
+                    <label for="edit_foto2">Foto 2 (Baru)</label>
+                    <input type="file" name="foto2" id="edit_foto2" class="form-control" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
-                <button type="submit" class="btn btn-success">Update</button>
+
+                <div class="form-group">
+                    <label for="edit_foto3">Foto 3 (Baru)</label>
+                    <input type="file" name="foto3" id="edit_foto3" class="form-control" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+                    <button type="submit" class="btn btn-success">Update</button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
 
+
 <style>
+    /* Hilangkan panah di Chrome, Safari, Edge, Opera */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+
+
     /* Semua modal memakai class sama */
     .modal {
         display: none;
@@ -333,7 +498,6 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         const formData = new FormData(form);
         formData.append('action', 'insert');
 
-
         for (const [key, value] of formData.entries()) {
             if (value instanceof File) {
                 console.log(`${key}: File { name: ${value.name}, size: ${value.size} }`);
@@ -342,7 +506,6 @@ $logbooks = CLogbook::_gi()->getAll('12345');
             }
         }
 
-
         try {
             const res = await fetch('http://localhost:8080/api/logbook.php', {
                 method: 'POST',
@@ -350,39 +513,43 @@ $logbooks = CLogbook::_gi()->getAll('12345');
             });
 
             const text = await res.text();
-            console.log('Response:', text);
-
             let data;
+
             try {
                 data = JSON.parse(text);
             } catch {
+                console.error('Response bukan JSON:', text);
                 throw new Error("Response bukan JSON! Cek PHP.");
             }
 
             if (data.status === 'success') {
                 alert('✅ Logbook berhasil disimpan!');
-                location.reload();
+                window.location.reload()
 
                 const emptyRow = document.getElementById('emptyRow');
                 if (emptyRow) emptyRow.remove();
 
-                const fotoCell = data.logbook.foto ?
-                    `<img src="http://localhost:8080/uploads/${data.logbook.foto}" alt="Foto" width="60" class="rounded">` :
+                const fotos = Array.isArray(data.logbook.foto) && data.logbook.foto.length > 0 ?
+                    data.logbook.foto.map(f => `<img src="http://localhost:8080/uploads/${f}" width="60" class="rounded me-1">`).join('') :
                     '-';
+
 
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                <td>${tbody.children.length + 1}</td>
-                <td>${data.logbook.tanggal}</td>
-                <td>${data.logbook.jkem}</td>
-                <td>${data.logbook.uraian}</td>
-                <td>${data.logbook.target}</td>
-                <td>${fotoCell}</td>
-                <td>
-                    <button class="btn btn-danger btn-sm" onclick="deleteLogbook(${data.logbook.id}, this)">Hapus</button>
-                </td>
-            `;
+        <td>${tbody.children.length + 1}</td>
+        <td>${data.logbook.tanggal}</td>
+        <td>${data.logbook.jkem}</td>
+        <td>${data.logbook.uraian}</td>
+        <td>${data.logbook.target}</td>
+        <td>${fotos}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="deleteLogbook(${data.logbook.id}, this)">Hapus</button>
+        </td>
+      `;
                 tbody.appendChild(newRow);
+
+                form.reset();
+                closeModalTambah();
             } else {
                 alert('❌ Gagal menyimpan logbook: ' + (data.message || 'Terjadi kesalahan.'));
             }
@@ -443,24 +610,7 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         document.getElementById('edit_uraian').value = logbook.uraian;
         document.getElementById('edit_target').value = logbook.target;
 
-        // Tampilkan foto lama
-        const fotoLamaDiv = document.getElementById('edit_foto_lama');
-        fotoLamaDiv.innerHTML = '';
-        if (logbook.foto) {
-            const fotos = JSON.parse(logbook.foto);
-            fotos.forEach(foto => {
-                const img = document.createElement('img');
-                img.src = 'http://localhost:8080/uploads/' + foto;
-                img.alt = 'Foto';
-                img.style.width = '50px';
-                img.style.height = '50px';
-                img.style.margin = '2px';
-                img.style.borderRadius = '5px';
-                fotoLamaDiv.appendChild(img);
-            });
-        } else {
-            fotoLamaDiv.innerText = 'Tidak ada foto.';
-        }
+
 
 
         openModalEdit();

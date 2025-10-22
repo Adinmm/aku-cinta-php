@@ -1,17 +1,16 @@
 <?php
-// Include config dan class
+
 include_once __DIR__ . '/../config.php';
 include_once __DIR__ . '/../controllers/Databases.php';
 include_once __DIR__ . '/../controllers/CLogbook.php';
 
-// Error reporting
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Set header JSON
+
 header('Content-Type: application/json');
 
-// Bersihkan buffer jika ada
 @ob_clean();
 
 
@@ -22,7 +21,7 @@ function handleInsert() {
     $uraian = $_POST['uraian'] ?? null;
     $target = $_POST['target'] ?? null;
 
-    $uploadedFiles = uploadFiles('foto');
+    $uploadedFiles = uploadFiles();
 
     $data = [
         'nim' => $nim,
@@ -40,6 +39,8 @@ function handleInsert() {
         'logbook' => array_merge(['id' => $id], $data)
     ]);
 }
+
+
 
 function handleDelete() {
     $id = $_POST['id'] ?? null;
@@ -82,29 +83,20 @@ function handleEdit() {
     ]);
 }
 
-function uploadFiles($inputName) {
+function uploadFiles() {
     $uploadedFiles = [];
-    if (isset($_FILES[$inputName])) {
-        $uploadDir = __DIR__ . '/../uploads/';
-        if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
-
-        foreach ($_FILES[$inputName]['name'] as $key => $filename) {
-            $tmp_name = $_FILES[$inputName]['tmp_name'][$key];
-            if (is_uploaded_file($tmp_name)) {
-                $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                $newName = uniqid('foto_') . '.' . $ext;
-                $uploadPath = $uploadDir . $newName;
-
-                if (!move_uploaded_file($tmp_name, $uploadPath)) {
-                    throw new Exception("Gagal upload file: $filename");
-                }
-
-                $uploadedFiles[] = $newName;
-            }
+    foreach (['foto1', 'foto2', 'foto3'] as $field) {
+        if (!empty($_FILES[$field]['name'])) {
+            $ext = pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION);
+            $newName = uniqid('foto_') . '.' . $ext;
+            $uploadPath = __DIR__ . '/../uploads/' . $newName;
+            move_uploaded_file($_FILES[$field]['tmp_name'], $uploadPath);
+            $uploadedFiles[] = $newName;
         }
     }
     return $uploadedFiles;
 }
+
 
 function handleRequest() {
     $action = $_POST['action'] ?? '';
