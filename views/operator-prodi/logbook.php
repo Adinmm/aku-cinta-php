@@ -1,100 +1,145 @@
 <?php
 include_once __DIR__ . '/../../controllers/CLogbook.php';
 
-
-$nim = $_GET['nim'] ?? '';
-
-$logbooks = [];
-if (!empty($nim)) {
-    // panggil controller dengan NIM dari input
-    $logbooks = CLogbook::_gi()->getAll($nim);
-}
+// Ambil semua logbook mahasiswa
+$logbooks = CLogbook::_gi()->getAll('12345');
 ?>
 
-<div style="width:100%; display:flex; justify-content: end; margin-bottom:20px;">
+<head>
 
-    <form method="GET" style="display:flex; gap:10px; max-width:450px; width:100%;">
-        <!-- Input dengan icon di depan -->
-        <span class="input-group-text bg-white border-end-0">
-            <i class="bi bi-search"></i>
-        </span>
-        <input
-            type="text"
-            name="nim"
-            class="form-control border-start-0"
-            placeholder="Cari berdasarkan NIM"
-            required>
-        <!-- Tombol Search -->
-        <button class="btn btn-primary" type="submit">
-            Cari
-        </button>
-    </form>
-</div>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<div style="
+    border: 1px solid #ccc;
+  
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    background-color: #fff;
+  ">
+
+    <p style="padding: 2rem; font-size: 1.5rem; border-bottom: solid 1px #ccc; font-weight: bold;">
+        Periode 2025 (Ganjil)
+    </p>
+
+    <div style="  padding: 2rem;">
+
+        <div style="display: flex; align-items: end; gap: 10px;" class="mb-3 text-end margin-bottom: 10px;">
+
+
+            <button
+                type="button"
+                style="
+             padding: 0 10px;
+             display: inline-flex;
+             align-items: center;
+             gap: 6px;
+             cursor: pointer;
+             border: solid 1px #3954f0ff;
+             border-radius: 3px;
+             background-color: #3954f0ff;
+             color: white;
+             height: 25px;
+        
+         ">
+
+                <span style="font-size:1.3rem;">Kelompok</span>
+            </button>
 
 
 
 
-<div style="overflow-x:auto;">
-    <table class="table table-striped mt-2 width:100%;">
-        <thead>
-            <tr>
-                <th style="width:5%; text-align:center;">No</th>
-                <th style="width:12%; text-align:center;">Tanggal</th>
-                <th style="min-width:450px; text-align:start;">JKEM</th> <!-- Bisa melebar -->
-                <th style="min-width:350px; text-align:start;">Uraian</th>
-                <th style="min-width:250px; text-align:start;">Target</th>
-                <th style="width:15%; text-align:center;">Foto</th>
-       
 
-            </tr>
-        </thead>
-        <tbody id="logbookTableBody">
-            <?php if (empty($logbooks)): ?>
-                <tr id="emptyRow">
-                    <td colspan="7" style="text-align:center;">Belum ada data logbook.</td>
-                </tr>
-            <?php else: ?>
-                <?php foreach ($logbooks as $i => $lb): ?>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table style="border-bottom: solid 1px #ccc;" class="table table-striped mt-2 width:100%; ">
+                <thead>
                     <tr>
-                        <td style="text-align:center;"><?= $i + 1 ?></td>
-                        <td style="text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
-                        <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?></td> <!-- Tampil penuh -->
-                        <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
-                            <?= htmlspecialchars($lb['uraian']) ?>
-                        </td>
-                        <td style="text-align:left;" title="<?= htmlspecialchars($lb['target']) ?>">
-                            <?= htmlspecialchars($lb['target']) ?>
-                        </td>
-                        <td style="text-align:center;">
-                            <?php
-                            if (!empty($lb['foto'])) {
-                                $fotos = json_decode($lb['foto'], true);
-                                if (is_array($fotos) && count($fotos) > 0) {
-                                    foreach ($fotos as $foto) {
-                                        $filePath = 'http://localhost:8080/uploads/' . $foto;
-                                        echo '<a href="' . htmlspecialchars($filePath) . '" download title="Download foto">';
-                                        echo '<img src="' . htmlspecialchars($filePath) . '" alt="Foto" style="width:50px;height:50px;margin:2px;border-radius:5px;">';
-                                        echo ' <i class="fa fa-download"></i>';
-                                        echo '</a><br>';
-                                    }
-                                } else {
-                                    echo '-';
-                                }
-                            } else {
-                                echo '-';
-                            }
-                            ?>
-                        </td>
-
+                        <th style="width:5%; text-align:center;">No</th>
+                        <th style="width:12%; text-align:center;">Tanggal</th>
+                        <th style="min-width:10px; text-align:start;">JKEM</th>
+                        <th style="min-width:450px; text-align:start;">Uraian</th>
+                        <th style="min-width:350px; text-align:start;">Target</th>
+                        <th style="width:5%; text-align:center;">Foto</th>
+   
                     </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </tbody>
-    </table>
+                </thead>
+                <tbody id="logbookTableBody">
+                    <?php if (empty($logbooks)): ?>
+                        <tr id="emptyRow">
+                            <td colspan="7" style="text-align:start;">Belum ada data logbook.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php
+                        $totalJkem = 0; // Inisialisasi total JKEM
+                        foreach ($logbooks as $i => $lb):
+                            $totalJkem += (float)$lb['jkem']; // Tambahkan JKEM ke total
+                        ?>
+                            <tr>
+                                <td style="text-align:center;"><?= $i + 1 ?></td>
+                                <td style="text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
+                                <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?> </td>
+                                <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
+                                    <?= htmlspecialchars($lb['uraian']) ?>
+                                </td>
+                                <td style="text-align:left;" title="<?= htmlspecialchars($lb['target']) ?>">
+                                    <?= htmlspecialchars($lb['target']) ?>
+                                </td>
+                                <td style="text-align:center;">
+                                    <?php
+                                    if (!empty($lb['foto'])) {
+                                        $fotos = json_decode($lb['foto'], true);
+
+                                        if (is_array($fotos) && count($fotos) > 0) {
+                                            $fotoNum = 1;
+
+                                            foreach ($fotos as $foto) {
+                                                $filePath = 'http://localhost:8080/uploads/' . htmlspecialchars($foto);
+
+                                                echo '<a href="' . $filePath . '" download title="Download foto">';
+                                                echo '<div style="display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 5px;">';
+                                                echo '<i class="fa fa-download" style="font-size:16px; line-height:1;"></i>';
+                                                echo '<p style="margin:0; line-height:1;">#' . $fotoNum . '</p>';
+                                                echo '</div>';
+                                                echo '</a>';
+
+                                                $fotoNum++;
+                                            }
+                                        } else {
+                                            echo '-';
+                                        }
+                                    } else {
+                                        echo '-';
+                                    }
+                                    ?>
+                                </td>
+                        
+                            </tr>
+                        <?php endforeach; ?>
+                           <tr style="background-color: white; font-weight: bold; width: 100%;">
+                            <td colspan="2" style=" padding-right: 15px; padding-bottom: 60px; padding-top: 10px;">Total</td>
+                            <td style="text-align:left; width: 50%; color: red;padding-bottom: 60px; padding-top: 10px;"><?= number_format($totalJkem) ?> Jam</td>
+                            <td colspan="4"></td>
+
+                        </tr>
+
+
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+    <div style="border-top: solid 1px #ccc; padding-top: 10px; padding: 20px; margin-top: 20px;">
+        <p>
+            <span style="color: red;">*</span>
+            Isian wajib (*) harus diisi, jika belum melengkapi semua isian wajib maka logbook tidak dapat dilanjutkan.
+        </p>
+    </div>
+
 </div>
-
-
-
 
 
 

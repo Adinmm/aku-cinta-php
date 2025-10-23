@@ -69,18 +69,17 @@ $logbooks = CLogbook::_gi()->getAll('12345');
 
         </div>
 
-        <div style="overflow-x:auto; ">
-            <table class="table table-striped mt-2 width:100%;">
+        <div style="overflow-x:auto;">
+            <table style="border-bottom: solid 1px #ccc;" class="table table-striped mt-2 width:100%; ">
                 <thead>
                     <tr>
                         <th style="width:5%; text-align:center;">No</th>
                         <th style="width:12%; text-align:center;">Tanggal</th>
-                        <th style="min-width:10px; text-align:start;">JKEM</th> <!-- Bisa melebar -->
+                        <th style="min-width:10px; text-align:start;">JKEM</th>
                         <th style="min-width:450px; text-align:start;">Uraian</th>
                         <th style="min-width:350px; text-align:start;">Target</th>
                         <th style="width:5%; text-align:center;">Foto</th>
-                        <th style="width:10%; text-align:center;">#</th>
-
+                        <th style="width:20%; text-align:center;">#</th>
                     </tr>
                 </thead>
                 <tbody id="logbookTableBody">
@@ -89,11 +88,15 @@ $logbooks = CLogbook::_gi()->getAll('12345');
                             <td colspan="7" style="text-align:start;">Belum ada data logbook.</td>
                         </tr>
                     <?php else: ?>
-                        <?php foreach ($logbooks as $i => $lb): ?>
+                        <?php
+                        $totalJkem = 0; // Inisialisasi total JKEM
+                        foreach ($logbooks as $i => $lb):
+                            $totalJkem += (float)$lb['jkem']; // Tambahkan JKEM ke total
+                        ?>
                             <tr>
                                 <td style="text-align:center;"><?= $i + 1 ?></td>
                                 <td style="text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
-                                <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?></td> <!-- Tampil penuh -->
+                                <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?> </td>
                                 <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
                                     <?= htmlspecialchars($lb['uraian']) ?>
                                 </td>
@@ -106,7 +109,7 @@ $logbooks = CLogbook::_gi()->getAll('12345');
                                         $fotos = json_decode($lb['foto'], true);
 
                                         if (is_array($fotos) && count($fotos) > 0) {
-                                            $i = 1; // mulai dari 1
+                                            $fotoNum = 1;
 
                                             foreach ($fotos as $foto) {
                                                 $filePath = 'http://localhost:8080/uploads/' . htmlspecialchars($foto);
@@ -114,11 +117,11 @@ $logbooks = CLogbook::_gi()->getAll('12345');
                                                 echo '<a href="' . $filePath . '" download title="Download foto">';
                                                 echo '<div style="display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 5px;">';
                                                 echo '<i class="fa fa-download" style="font-size:16px; line-height:1;"></i>';
-                                                echo '<p style="margin:0; line-height:1;">#' . $i . '</p>';
+                                                echo '<p style="margin:0; line-height:1;">#' . $fotoNum . '</p>';
                                                 echo '</div>';
                                                 echo '</a>';
 
-                                                $i++;
+                                                $fotoNum++;
                                             }
                                         } else {
                                             echo '-';
@@ -128,198 +131,180 @@ $logbooks = CLogbook::_gi()->getAll('12345');
                                     }
                                     ?>
                                 </td>
-
-
                                 <td style="text-align:center;">
                                     <div style="display: flex; justify-content: center; gap: 5px; flex-wrap: wrap;">
-
-                                        <button style="padding: 5px 10px; border:1px solid blue; background-color: transparent; color: blue; border-radius: 6px;" onclick="editLogbook(<?= $lb['id'] ?>, this)"><i class="fa fa-pencil"></i> Edit</button>
-
-                                        <button style="padding: 5px 10px; border:1px solid red; background-color: transparent; color: red; border-radius: 6px;" onclick="deleteLogbook(<?= $lb['id'] ?>, this)"><i class="fa fa-trash"></i> Hapus</button>
+                                        <button style="padding: 5px 10px; border:1px solid blue; background-color: transparent; color: blue; border-radius: 6px;" onclick="editLogbook(<?= $lb['id'] ?>, this)">
+                                            <i class="fa fa-pencil"></i> Edit
+                                        </button>
+                                        <button style="padding: 5px 10px; border:1px solid red; background-color: transparent; color: red; border-radius: 6px; width: 80px;" onclick="deleteLogbook(<?= $lb['id'] ?>, this)">
+                                            <i class="fa fa-trash"></i> Hapus
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
+                        <tr style="background-color: white; font-weight: bold; width: 100%;">
+                            <td colspan="2" style=" padding-right: 15px; padding-bottom: 60px; padding-top: 10px;">Total</td>
+                            <td style="text-align:left; width: 50%; color: red;padding-bottom: 60px; padding-top: 10px;"><?= number_format($totalJkem) ?> Jam</td>
+                            <td colspan="4"></td>
+
+                        </tr>
+
+
                     <?php endif; ?>
                 </tbody>
             </table>
+
         </div>
+
+    </div>
+    <div style="border-top: solid 1px #ccc; padding-top: 10px; padding: 20px; margin-top: 20px;">
+        <p>
+            <span style="color: red;">*</span>
+            Isian wajib (*) harus diisi, jika belum melengkapi semua isian wajib maka logbook tidak dapat dilanjutkan.
+        </p>
     </div>
 
 </div>
 
 
 
-<!-- Modal Tambah Logbook -->
-<div style="overflow: auto;" id="modalTambah" class="modal">
-    <div class="modal-content ">
-        <div class="modal-header">
-            <div>
-
-                <h4 style="text-align: center; font-size: 3rem; font-weight: bold; padding-bottom: 5px;">Tambah</h4>
-                <p style="text-align: center;">Logbook Kelompok</p>
-            </div>
-            <span class="close" onclick="closeModalTambah()">&times;</span>
-        </div>
-        <form style="padding: 0 4rem;" id="logbookForm" method="post" enctype="multipart/form-data" action="proses_tambah_logbook.php">
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="tanggal">Tanggal</label>
-                    <input type="date" name="tanggal" id="tanggal" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="jkem">JKEM</label>
-                    <div style="display: flex; align-items: center;">
-                        <input
-                            type="number"
-                            name="jkem"
-                            id="jkem"
-                            class="form-control"
-                            placeholder="Masukkan JKEM"
-                            required
-                            style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
-                        <span
-                            style="
-        background-color: #e9ecef;
-        border: 1px solid #ced4da;
-        border-left: none;
-        padding: 6px 12px;
-        border-top-right-radius: 6px;
-        border-bottom-right-radius: 6px;
-        font-size: 14px;
-        color: #333;
-      ">
-                            Jam
-                        </span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="uraian">Uraian</label>
-                    <textarea name="uraian" id="uraian" class="form-control" placeholder="Masukkan uraian" rows="5" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="target">Target</label>
-                    <textarea name="target" id="target" class="form-control" placeholder="Masukkan target" rows="5" required></textarea>
-
-                </div>
-
-
-                <div class="form-group">
-                    <label for="foto1">Foto 1</label>
-                    <input type="file" name="foto1" id="foto1" class="form-control" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
-                </div>
-
-                <div class="form-group">
-                    <label for="foto2">Foto 2</label>
-                    <input type="file" name="foto2" id="foto2" class="form-control" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
-                </div>
-
-                <div class="form-group">
-                    <label for="foto3">Foto 3</label>
-                    <input type="file" name="foto3" id="foto3" class="form-control" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModalTambah()">Batal</button>
-                    <button type="submit" class="btn btn-success">Simpan</button>
-                </div>
-        </form>
-    </div>
-</div>
 
 
 <!-- Modal Edit Logbook -->
-<div style="overflow: auto;" id="modalEdit" class="modal">
+<div id="modalEdit" class="modal">
     <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
         <div class="modal-header">
             <div>
-                <h4 style="text-align: center; font-size: 3rem; font-weight: bold; padding-bottom: 5px;">Edit</h4>
-                <p style="text-align: center;">Logbook Kelompok</p>
+                <h4 style="text-align: center; font-size: 2.5rem;">Edit</h4>
+                <p style="text-align: center;">Logbook PKL</p>
             </div>
-            <span class="close" onclick="closeEditModal()">&times;</span>
+
         </div>
 
-        <form style="padding: 0 4rem;" id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
+        <form id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
             <input type="hidden" name="id" id="edit_id">
 
             <div class="modal-body">
                 <div class="form-group">
                     <label for="edit_tanggal">Tanggal</label>
+
                     <input type="date" name="tanggal" id="edit_tanggal" class="form-control" required>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_jkem">JKEM</label>
-                    <div style="display: flex; align-items: center;">
-                        <input
-                            type="number"
-                            name="jkem"
-                            id="edit_jkem"
-                            class="form-control"
-                            placeholder="Masukkan JKEM"
-                            required
-                            style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
-                        <span
-                            style="
-                background-color: #e9ecef;
-                border: 1px solid #ced4da;
-                border-left: none;
-                padding: 6px 12px;
-                border-top-right-radius: 6px;
-                border-bottom-right-radius: 6px;
-                font-size: 14px;
-                color: #333;
-              ">
-                            Jam
-                        </span>
+                    <div class="input-group">
+                        <input type="number" name="jkem" id="edit_jkem" class="form-control" placeholder="Masukkan JKEM" required>
+                        <span class="input-addon">Jam</span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_uraian">Uraian</label>
-                    <textarea name="uraian" id="edit_uraian" class="form-control" placeholder="Masukkan uraian" rows="5" required></textarea>
+                    <textarea name="uraian" id="edit_uraian" class="form-control" placeholder="Masukkan uraian" rows="4" required></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_target">Target</label>
-                    <textarea name="target" id="edit_target" class="form-control" placeholder="Masukkan target" rows="5" required></textarea>
+                    <textarea name="target" id="edit_target" class="form-control" placeholder="Masukkan target" rows="4" required></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_foto1">Foto 1 (Baru)</label>
-                    <input type="file" name="foto1" id="edit_foto1" class="form-control" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
+                    <input type="file" name="foto1" id="edit_foto1" class="form-control-file" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_foto2">Foto 2 (Baru)</label>
-                    <input type="file" name="foto2" id="edit_foto2" class="form-control" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
+                    <input type="file" name="foto2" id="edit_foto2" class="form-control-file" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_foto3">Foto 3 (Baru)</label>
-                    <input type="file" name="foto3" id="edit_foto3" class="form-control" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format dokumen scan <span style="color: red;">jpg/jpeg, png</span></small>
+                    <input type="file" name="foto3" id="edit_foto3" class="form-control-file" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
                 </div>
+            </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
-                    <button type="submit" class="btn btn-success">Update</button>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+                <button type="submit" class="btn btn-success">Update</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- Modal Tambah -->
+<div id="modalTambah" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModalTambah()">&times;</span>
+        <div class="modal-header">
+            <div>
+                <h4 style="text-align: center; font-size: 2.5rem;">Tambah</h4>
+                <p style="text-align: center;">Logbook PKL</p>
+            </div>
 
+        </div>
+
+        <form id="logbookForm" method="post" enctype="multipart/form-data" action="proses_tambah_logbook.php">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="tanggal">Tanggal <span style="color: red;">*</span></label>
+
+                    <input type="date" name="tanggal" id="tanggal" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="jkem">JKEM <span style="color: red;">*</span></label>
+                    <div class="input-group">
+                        <input type="number" name="jkem" id="jkem" class="form-control" placeholder="Masukkan JKEM" required>
+                        <span class="input-addon">Jam</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="uraian">Uraian <span style="color: red;">*</span></label>
+                    <textarea name="uraian" id="uraian" class="form-control" placeholder="Masukkan uraian" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="target">Target <span style="color: red;">*</span></label>
+                    <textarea name="target" id="target" class="form-control" placeholder="Masukkan target" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="foto1">Foto 1</label>
+                    <input type="file" name="foto1" id="foto1" class="form-control-file" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="foto2">Foto 2</label>
+                    <input type="file" name="foto2" id="foto2" class="form-control-file" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="foto3">Foto 3</label>
+                    <input type="file" name="foto3" id="foto3" class="form-control-file" accept=".jpg,.jpeg,.png">
+                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModalTambah()">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <style>
-    /* Hilangkan panah di Chrome, Safari, Edge, Opera */
+    /* Hilangkan panah number input */
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -327,121 +312,210 @@ $logbooks = CLogbook::_gi()->getAll('12345');
     }
 
 
-
-    /* Semua modal memakai class sama */
     .modal {
         display: none;
         align-items: center;
         justify-content: center;
         position: fixed;
-        z-index: 999;
-        left: 0;
         top: 0;
+        left: 0;
         width: 100%;
-        height: 100%;
-        overflow-y: auto;
+        height: 100vh;
         background-color: rgba(0, 0, 0, 0.5);
-        animation: fadeIn 0.3s;
+        z-index: 999;
+        padding: 20px;
+        animation: fadeIn 0.3s ease;
+      
     }
 
     .modal-content {
         background-color: #fff;
-        margin: 50px auto;
-        padding: 0;
-        border-radius: 10px;
-        width: 90%;
-        max-width: 600px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        animation: slideIn 0.3s;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.3s ease;
+        
     }
 
     .modal-header {
-        padding: 20px;
-        border-bottom: 1px solid #eee;
+        padding: 18px 20px 14px;
+        border-bottom: 1px solid #e5e7eb;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        position: relative;
+
     }
 
     .modal-header h4 {
+        margin: 0 0 2px 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .modal-header p {
         margin: 0;
-        font-size: 1.3rem;
+        font-size: 13px;
+        color: #6b7280;
     }
 
     .close {
-        position: absolute;
-        right: 20px;
-        font-size: 1.5rem;
+        font-size: 24px;
+        line-height: 1;
         cursor: pointer;
-        color: #999;
+        color: #9ca3af;
         transition: color 0.2s;
+        background: none;
+        border: none;
+        padding: 0;
+        margin-left: 16px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 1rem;
     }
 
     .close:hover {
-        color: #333;
+        color: #374151;
     }
 
     .modal-body {
-        padding: 20px;
+        padding: 16px 20px;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
     }
 
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
     }
 
     .form-group label {
-        font-weight: 600;
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
+        font-weight: 600;
+        font-size: 13px;
+        color: #374151;
     }
 
     .form-control {
         width: 100%;
-        padding: 8px 12px;
+        padding: 8px 10px;
         border-radius: 6px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
+        border: 1px solid #d1d5db;
+        font-size: 13px;
+        transition: all 0.2s;
     }
 
     .form-control:focus {
-        border-color: #28a745;
+        border-color: #3b82f6;
         outline: none;
-        box-shadow: 0 0 3px rgba(40, 167, 69, 0.3);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-control::placeholder {
+        color: #9ca3af;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .input-addon {
+        display: flex;
+        align-items: center;
+        padding: 6.8px 12px;
+        background-color: #f3f4f6;
+        border: 1px solid #d1d5db;
+        border-left: none;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+        font-size: 13px;
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .form-control-file {
+        width: 100%;
+        padding: 7px 10px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        font-size: 13px;
+        background-color: #fff;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .form-control-file:hover {
+        border-color: #3b82f6;
+    }
+
+    .text-muted {
+        display: block;
+        margin-top: 3px;
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+    .text-danger {
+        color: #ef4444;
+        font-weight: 500;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 50px;
+        font-family: inherit;
     }
 
     .modal-footer {
-        padding: 15px 20px;
-        border-top: 1px solid #eee;
+        padding: 12px 20px;
+        border-top: 1px solid #e5e7eb;
         display: flex;
         justify-content: flex-end;
         gap: 10px;
+        background-color: #f9fafb;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
     }
 
     .btn {
-        padding: 8px 18px;
+        padding: 8px 16px;
         border-radius: 6px;
         border: none;
         cursor: pointer;
         font-weight: 600;
+        font-size: 13px;
+        transition: all 0.2s;
     }
 
     .btn-secondary {
-        background-color: #6c757d;
-        color: #fff;
+        background-color: #fff;
+        color: #374151;
+        border: 1px solid #d1d5db;
     }
 
     .btn-secondary:hover {
-        background-color: #5a6268;
+        background-color: #f3f4f6;
     }
 
-    .btn-success {
-        background-color: #28a745;
+    .btn-primary {
+        background-color: #3b82f6;
         color: #fff;
     }
 
-    .btn-success:hover {
-        background-color: #218838;
+    .btn-primary:hover {
+        background-color: #2563eb;
     }
 
     @keyframes fadeIn {
@@ -456,7 +530,7 @@ $logbooks = CLogbook::_gi()->getAll('12345');
 
     @keyframes slideIn {
         from {
-            transform: translateY(-30px);
+            transform: translateY(-20px);
             opacity: 0;
         }
 
@@ -465,7 +539,52 @@ $logbooks = CLogbook::_gi()->getAll('12345');
             opacity: 1;
         }
     }
+
+    /* Scrollbar styling */
+    .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+
+    /* Responsive */
+    @media (max-height: 700px) {
+        .modal-body {
+            max-height: calc(100vh - 180px);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .modal {
+            padding: 10px;
+        }
+
+        .modal-header {
+            padding: 16px 16px 12px;
+        }
+
+        .modal-body {
+            padding: 14px 16px;
+        }
+
+        .modal-footer {
+            padding: 10px 16px;
+        }
+    }
 </style>
+
 
 
 <script>
