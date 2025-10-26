@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Waktu pembuatan: 16 Okt 2025 pada 03.49
+-- Waktu pembuatan: 26 Okt 2025 pada 09.49
 -- Versi server: 8.0.43
 -- Versi PHP: 8.3.26
 
@@ -80,6 +80,7 @@ INSERT INTO `dosen` (`dosen_kode`, `dosen_nip`, `dosen_nidn`, `dosen_nama`, `dos
 
 CREATE TABLE `logbook` (
   `id` int NOT NULL,
+  `nama` text NOT NULL,
   `mahasiswa_nim` varchar(20) NOT NULL,
   `jkem` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `tanggal` date NOT NULL,
@@ -93,11 +94,9 @@ CREATE TABLE `logbook` (
 -- Dumping data untuk tabel `logbook`
 --
 
-INSERT INTO `logbook` (`id`, `mahasiswa_nim`, `jkem`, `tanggal`, `uraian`, `target`, `foto`, `created_at`) VALUES
-(17, '12345', 'Jika kamu ingin menampilkan foto-foto yang tersimpan dalam database sebagai array JSON di tabel HTML, setiap foto dapat ditampilkan secara vertikal dengan menambahkan <br> setelah tiap thumbnail, sehingga setiap gambar muncul satu per baris lengkap dengan ikon download di sampingnya; untuk foto yang berupa URL langsung, cukup gunakan link tersebut, sedangkan untuk foto lokal bisa ditambahkan path folder seperti uploads/, sehingga pengguna dapat melihat semua foto dengan jelas dan mendownloadnya satu per satu tanpa tampilan horizontal yang berantakan.', '2025-10-15', 'Kalau mau, aku bisa langsung modifikasi tabel logbook kamu agar semua kolom', 'Target harian', '[\"contoh_foto.jpg\"]', '2025-10-15 04:46:18'),
-(18, '12345', 'erdtfyguhj', '2025-10-15', 'b', 'wertyui', '[\"wallpaperflare.com_wallpaper.jpg\"]', '2025-10-15 09:19:47'),
-(20, '12345', 'bnnbbnn', '2025-10-15', 'hhh', 'dfghj', '[\"justin-wolff-Macs-aqy6Ek-unsplash.jpg\"]', '2025-10-15 09:41:11'),
-(23, '12345', 'wswsdddd', '2025-10-15', 'qwertynnn', 'wertyuikkkk', '[\"foto_68efb17207dfd.jpg\"]', '2025-10-15 12:44:43');
+INSERT INTO `logbook` (`id`, `nama`, `mahasiswa_nim`, `jkem`, `tanggal`, `uraian`, `target`, `foto`, `created_at`) VALUES
+(34, 'Nama 1', '12345', '10', '2025-10-21', 'Manchester United Football Club adalah sebuah klub sepak bola profesional yang berbasis di Old Trafford, Manchester Raya, Inggris, dan bermain di Liga Utama Inggris. Klub ini memiliki 20 gelar Liga Inggris dengan 13 di antaranya di era Liga Utama, terbanyak sepanjang masa. Didirikan sebagai Newton Heath LYR Football Club pada tahun 1878, klub ini berganti nama menjadi Manchester United pada 1902 dan pindah ke Old Trafford pada tahun 1910.\r\n\r\nManchester United telah memenangkan banyak trofi di sepak bola Inggris, termasuk 20 gelar Liga—terbanyak dalam sejarah, 13 gelar Piala FA, 6 gelar Piala Liga dan 21 gelar Community Shield FA—juga terbanyak dalam sejarah. Klub ini juga telah memenangkan tiga gelar Piala/Liga Champions, satu Liga Eropa UEFA, satu Piala Winners UEFA, satu Piala Super UEFA, satu Piala Interkontinental, dan satu Piala Dunia Antarklub FIFA—klub Inggris pertama yang menjuarai ajang ini. Pada musim 1998–1999, klub ini memenangkan treble (trigelar) dari Liga Utama, Piala FA, dan Liga Champions; prestasi ini belum pernah terjadi sebelumnya untuk klub Inggris. Manchester United juga merupakan salah satu klub tersukses sepanjang masa di Inggris.', 'Manchester United Football Club adalah sebuah klub sepak bola profesional yang berbasis di Old Trafford, Manchester Raya, Inggris, dan bermain di Liga Utama Inggris. Klub ini memiliki 20 gelar Liga Inggris dengan 13 di antaranya di era Liga Utama, ', '[\"foto_68f70245ce350.png\"]', '2025-10-21 03:47:17'),
+(35, 'Nama 3', '2222', '6', '2025-10-24', 'vghuijk', 'gvyhuij', '[\"foto_68fa3a23932a8.png\",\"foto_68fa3a2395562.png\",\"foto_68fa3a23972e0.png\"]', '2025-10-23 14:22:27');
 
 -- --------------------------------------------------------
 
@@ -423,13 +422,13 @@ ALTER TABLE `bimbingan`
 -- AUTO_INCREMENT untuk tabel `logbook`
 --
 ALTER TABLE `logbook`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT untuk tabel `operator`
 --
 ALTER TABLE `operator`
-  MODIFY `operator_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `operator_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `pengajuan`
@@ -447,7 +446,7 @@ ALTER TABLE `pengantar`
 -- AUTO_INCREMENT untuk tabel `persetujuan`
 --
 ALTER TABLE `persetujuan`
-  MODIFY `persetujuan_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `persetujuan_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `pesan`

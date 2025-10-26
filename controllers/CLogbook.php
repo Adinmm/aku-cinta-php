@@ -12,12 +12,20 @@ class CLogbook extends Databases {
     }
 
     // Ambil semua logbook mahasiswa berdasarkan NIM
-    public function getAll($nim) {
+    public function getById($nim) {
         $query = "SELECT * FROM logbook WHERE mahasiswa_nim = ?";
         $this->_STH = $this->_DBH->prepare($query);
         $this->_STH->execute([$nim]);
         return $this->_STH->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAll() {
+    $query = "SELECT * FROM logbook";
+    $this->_STH = $this->_DBH->prepare($query);
+    $this->_STH->execute();
+    return $this->_STH->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
     // Tambah logbook baru
     public function insertLogbook($data) {

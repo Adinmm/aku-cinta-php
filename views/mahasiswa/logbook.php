@@ -1,76 +1,40 @@
 <?php
 include_once __DIR__ . '/../../controllers/CLogbook.php';
 
-// Ambil semua logbook mahasiswa
+
 $logbooks = CLogbook::_gi()->getAll('12345');
 ?>
 
 <head>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/logbook.css">
 </head>
 
-<div style="
-    border: 1px solid #ccc;
-  
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+<div class="logbook-root">
 
-    background-color: #fff;
-  ">
-
-    <p style="padding: 2rem; font-size: 1.5rem; border-bottom: solid 1px #ccc; font-weight: bold;">
+    <p class="logbook-periode">
         Periode 2025 (Ganjil)
     </p>
 
-    <div style="  padding: 2rem;">
-
-        <div style="display: flex; align-items: end; gap: 10px;" class="mb-3 text-end">
-
-
+    <div class="content">
+        <div class="mb-3 text-end">
             <button
-                type="button"
-                style="
-             padding: 0 10px;
-             display: inline-flex;
-             align-items: center;
-             gap: 6px;
-             cursor: pointer;
-             border: solid 1px #3954f0ff;
-             border-radius: 3px;
-             background-color: #3954f0ff;
-             color: white;
-             height: 25px;
-        
-         ">
-
+                class="btn-kelompok"
+                type="button">
                 <span style="font-size:1.3rem;">Kelompok</span>
             </button>
-
-
             <button
-                style="
-             padding: 7px 14px;
-             border: 1px solid #22b0b0ff;
-             background-color: transparent;
-             color: #22b0b0ff;
-             border-radius: 6px;
-             display: flex;
-             align-items: center;
-             gap: 5px;
-             cursor: pointer;
-         "
+                class="btn-tambah"
                 data-bs-toggle="modal"
                 data-bs-target="#modalTambah">
-                <i class="bi bi-plus" style="font-size: 2rem; line-height: 1; font-weight: 700;"></i>
-                <p style="margin: 0; line-height: 1; font-size: 1.5rem;">Tambah</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                </svg>
+
+                <p>Tambah</p>
             </button>
-
-
-
         </div>
-
         <div style="overflow-x:auto;">
-            <table style="border-bottom: solid 1px #ccc;" class="table table-striped mt-2 width:100%; ">
+            <table class="table table-striped mt-2 width:100%; ">
                 <thead>
                     <tr>
                         <th style="width:5%; text-align:center;">No</th>
@@ -133,19 +97,19 @@ $logbooks = CLogbook::_gi()->getAll('12345');
                                 </td>
                                 <td style="text-align:center;">
                                     <div style="display: flex; justify-content: center; gap: 5px; flex-wrap: wrap;">
-                                        <button style="padding: 5px 10px; border:1px solid blue; background-color: transparent; color: blue; border-radius: 6px;" onclick="editLogbook(<?= $lb['id'] ?>, this)">
+                                        <button class="btn-edit" style="" onclick="editLogbook(<?= $lb['id'] ?>, this)">
                                             <i class="fa fa-pencil"></i> Edit
                                         </button>
-                                        <button style="padding: 5px 10px; border:1px solid red; background-color: transparent; color: red; border-radius: 6px; width: 80px;" onclick="deleteLogbook(<?= $lb['id'] ?>, this)">
+                                        <button class="btn-hapus" onclick="deleteLogbook(<?= $lb['id'] ?>, this)">
                                             <i class="fa fa-trash"></i> Hapus
                                         </button>
                                     </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                        <tr style="background-color: white; font-weight: bold; width: 100%;">
-                            <td colspan="2" style=" padding-right: 15px; padding-bottom: 60px; padding-top: 10px;">Total</td>
-                            <td style="text-align:left; width: 50%; color: red;padding-bottom: 60px; padding-top: 10px;"><?= number_format($totalJkem) ?> Jam</td>
+                        <tr class="total-footer">
+                            <td colspan="2">Total</td>
+                            <td><?= number_format($totalJkem) ?> Jam</td>
                             <td colspan="4"></td>
 
                         </tr>
@@ -158,10 +122,10 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         </div>
 
     </div>
-    <div style="border-top: solid 1px #ccc; padding-top: 10px; padding: 20px; margin-top: 20px;">
+    <div style="border-top: solid 1px #ccc; padding-top: 10px; padding: 20px; margin-top: 30px;">
         <p>
-            <span style="color: red;">*</span>
-            Isian wajib (*) harus diisi, jika belum melengkapi semua isian wajib maka logbook tidak dapat dilanjutkan.
+
+            * Isian wajib (*) harus diisi, jika belum melengkapi semua isian wajib maka logbook tidak dapat dilanjutkan.
         </p>
     </div>
 
@@ -173,69 +137,130 @@ $logbooks = CLogbook::_gi()->getAll('12345');
 
 <!-- Modal Edit Logbook -->
 <div id="modalEdit" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeEditModal()">&times;</span>
-        <div class="modal-header">
-            <div>
-                <h4 style="text-align: center; font-size: 2.5rem;">Edit</h4>
-                <p style="text-align: center;">Logbook PKL</p>
-            </div>
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
 
-        </div>
-
-        <form id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
-            <input type="hidden" name="id" id="edit_id">
-
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="edit_tanggal">Tanggal</label>
-
-                    <input type="date" name="tanggal" id="edit_tanggal" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_jkem">JKEM</label>
-                    <div class="input-group">
-                        <input type="number" name="jkem" id="edit_jkem" class="form-control" placeholder="Masukkan JKEM" required>
-                        <span class="input-addon">Jam</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_uraian">Uraian</label>
-                    <textarea name="uraian" id="edit_uraian" class="form-control" placeholder="Masukkan uraian" rows="4" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_target">Target</label>
-                    <textarea name="target" id="edit_target" class="form-control" placeholder="Masukkan target" rows="4" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_foto1">Foto 1 (Baru)</label>
-                    <input type="file" name="foto1" id="edit_foto1" class="form-control-file" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_foto2">Foto 2 (Baru)</label>
-                    <input type="file" name="foto2" id="edit_foto2" class="form-control-file" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_foto3">Foto 3 (Baru)</label>
-                    <input type="file" name="foto3" id="edit_foto3" class="form-control-file" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
-                <button type="submit" class="btn btn-success">Update</button>
-            </div>
-        </form>
+    <div class="modal-header">
+      <div>
+        <h4 style="text-align: center; font-size: 2.5rem;">Edit</h4>
+        <p style="text-align: center;">Logbook PKL</p>
+      </div>
     </div>
+
+    <form id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
+      <input type="hidden" name="id" id="edit_id" />
+
+      <div style="background-color: #f5f5f5; width: 100%; padding: 10px 0;">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="edit_tanggal">Tanggal <span>*</span></label>
+            <input type="date" name="tanggal" id="edit_tanggal" class="form-control" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit_jkem">JKEM <span>*</span></label>
+            <div class="input-group">
+              <input
+                type="number"
+                name="jkem"
+                id="edit_jkem"
+                class="form-control"
+                placeholder="Masukkan JKEM"
+                required
+              />
+                <span style="font-size: 12px; color: #000000;" class="input-addon">Jam</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_uraian">Uraian <span>*</span></label>
+            <textarea
+              name="uraian"
+              id="edit_uraian"
+              class="form-control"
+              placeholder="Masukkan uraian"
+              rows="5"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_target">Target <span>*</span></label>
+            <textarea
+              name="target"
+              id="edit_target"
+              class="form-control"
+              placeholder="Masukkan target"
+              rows="5"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_foto1">Foto </label>
+            <div>
+              <input
+                type="file"
+                name="foto1"
+                id="edit_foto1"
+                class="form-control-file"
+                accept=".jpg,.jpeg,.png"
+              />
+              <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_foto2"></label>
+            <div>
+              <input
+                type="file"
+                name="foto2"
+                id="edit_foto2"
+                class="form-control-file"
+                accept=".jpg,.jpeg,.png"
+              />
+              <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_foto3"></label>
+            <div>
+              <input
+                type="file"
+                name="foto3"
+                id="edit_foto3"
+                class="form-control-file"
+                accept=".jpg,.jpeg,.png"
+              />
+              <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+        <button type="submit" class="btn btn-success btn-simpan">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-floppy"
+            viewBox="0 0 16 16"
+          >
+            <path d="M11 2H9v3h2z" />
+            <path
+              d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"
+            />
+          </svg>
+          <p>Update</p>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Modal Tambah -->
@@ -251,339 +276,84 @@ $logbooks = CLogbook::_gi()->getAll('12345');
         </div>
 
         <form id="logbookForm" method="post" enctype="multipart/form-data" action="proses_tambah_logbook.php">
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="tanggal">Tanggal <span style="color: red;">*</span></label>
+            <div style="background-color: #f5f5f5; width: 100%; padding: 10px 0;">
 
-                    <input type="date" name="tanggal" id="tanggal" class="form-control" required>
-                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="tanggal">Tanggal <span>*</span></label>
 
-                <div class="form-group">
-                    <label for="jkem">JKEM <span style="color: red;">*</span></label>
-                    <div class="input-group">
-                        <input type="number" name="jkem" id="jkem" class="form-control" placeholder="Masukkan JKEM" required>
-                        <span class="input-addon">Jam</span>
+                        <input type="date" name="tanggal" id="tanggal" class="form-control" required>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="uraian">Uraian <span style="color: red;">*</span></label>
-                    <textarea name="uraian" id="uraian" class="form-control" placeholder="Masukkan uraian" rows="4" required></textarea>
-                </div>
+                       <div class="form-group">
+            <label for="edit_jkem">JKEM <span>*</span></label>
+            <div class="input-group">
+              <input
+                type="number"
+                name="jkem"
+                id="edit_jkem"
+                class="form-control"
+                placeholder="Masukkan JKEM"
+                required
+              />
+              <span style="font-size: 12px; color: #000000;" class="input-addon">Jam</span>
+            </div>
+          </div>
 
-                <div class="form-group">
-                    <label for="target">Target <span style="color: red;">*</span></label>
-                    <textarea name="target" id="target" class="form-control" placeholder="Masukkan target" rows="4" required></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="uraian">Uraian <span>*</span></label>
+                        <textarea name="uraian" id="uraian" class="form-control" placeholder="Masukkan uraian" rows="5" required></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="foto1">Foto 1</label>
-                    <input type="file" name="foto1" id="foto1" class="form-control-file" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
-                </div>
+                    <div class="form-group">
+                        <label for="target">Target <span>*</span></label>
+                        <textarea name="target" id="target" class="form-control" placeholder="Masukkan target" rows="5" required></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="foto2">Foto 2</label>
-                    <input type="file" name="foto2" id="foto2" class="form-control-file" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
-                </div>
+                    <div class="form-group">
+                        <label for="foto1">Foto</label>
+                        <div>
+                            <input type="file" name="foto1" id="foto1" class="form-control-file" accept=".jpg,.jpeg,.png" required>
+                            <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
+                        </div>
 
-                <div class="form-group">
-                    <label for="foto3">Foto 3</label>
-                    <input type="file" name="foto3" id="foto3" class="form-control-file" accept=".jpg,.jpeg,.png">
-                    <small class="text-muted">Format: <span class="text-danger">jpg/jpeg, png</span></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="foto2"></label>
+                        <div>
+                            <input type="file" name="foto2" id="foto2" class="form-control-file" accept=".jpg,.jpeg,.png">
+                            <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="foto3"></label>
+                        <div>
+                            <input type="file" name="foto3" id="foto3" class="form-control-file" accept=".jpg,.jpeg,.png">
+                            <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeModalTambah()">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary btn-simpan">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16">
+                        <path d="M11 2H9v3h2z" />
+                        <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z" />
+                    </svg>
+                    <p>Simpan</p>
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<style>
-    /* Hilangkan panah number input */
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
 
-
-    .modal {
-        display: none;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-        padding: 20px;
-        animation: fadeIn 0.3s ease;
-      
-    }
-
-    .modal-content {
-        background-color: #fff;
-        border-radius: 12px;
-        width: 100%;
-        max-width: 500px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        animation: slideIn 0.3s ease;
-        
-    }
-
-    .modal-header {
-        padding: 18px 20px 14px;
-        border-bottom: 1px solid #e5e7eb;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-    }
-
-    .modal-header h4 {
-        margin: 0 0 2px 0;
-        font-size: 20px;
-        font-weight: 700;
-        color: #111827;
-    }
-
-    .modal-header p {
-        margin: 0;
-        font-size: 13px;
-        color: #6b7280;
-    }
-
-    .close {
-        font-size: 24px;
-        line-height: 1;
-        cursor: pointer;
-        color: #9ca3af;
-        transition: color 0.2s;
-        background: none;
-        border: none;
-        padding: 0;
-        margin-left: 16px;
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 1rem;
-    }
-
-    .close:hover {
-        color: #374151;
-    }
-
-    .modal-body {
-        padding: 16px 20px;
-        max-height: calc(100vh - 200px);
-        overflow-y: auto;
-    }
-
-    .form-group {
-        margin-bottom: 12px;
-    }
-
-    .form-group:last-child {
-        margin-bottom: 0;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 4px;
-        font-weight: 600;
-        font-size: 13px;
-        color: #374151;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 8px 10px;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
-        font-size: 13px;
-        transition: all 0.2s;
-    }
-
-    .form-control:focus {
-        border-color: #3b82f6;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .form-control::placeholder {
-        color: #9ca3af;
-    }
-
-    .input-group {
-        display: flex;
-        align-items: stretch;
-    }
-
-    .input-group .form-control {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    .input-addon {
-        display: flex;
-        align-items: center;
-        padding: 6.8px 12px;
-        background-color: #f3f4f6;
-        border: 1px solid #d1d5db;
-        border-left: none;
-        border-top-right-radius: 6px;
-        border-bottom-right-radius: 6px;
-        font-size: 13px;
-        color: #6b7280;
-        font-weight: 500;
-    }
-
-    .form-control-file {
-        width: 100%;
-        padding: 7px 10px;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
-        font-size: 13px;
-        background-color: #fff;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .form-control-file:hover {
-        border-color: #3b82f6;
-    }
-
-    .text-muted {
-        display: block;
-        margin-top: 3px;
-        font-size: 11px;
-        color: #6b7280;
-    }
-
-    .text-danger {
-        color: #ef4444;
-        font-weight: 500;
-    }
-
-    textarea.form-control {
-        resize: vertical;
-        min-height: 50px;
-        font-family: inherit;
-    }
-
-    .modal-footer {
-        padding: 12px 20px;
-        border-top: 1px solid #e5e7eb;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        background-color: #f9fafb;
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
-
-    .btn {
-        padding: 8px 16px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 13px;
-        transition: all 0.2s;
-    }
-
-    .btn-secondary {
-        background-color: #fff;
-        color: #374151;
-        border: 1px solid #d1d5db;
-    }
-
-    .btn-secondary:hover {
-        background-color: #f3f4f6;
-    }
-
-    .btn-primary {
-        background-color: #3b82f6;
-        color: #fff;
-    }
-
-    .btn-primary:hover {
-        background-color: #2563eb;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes slideIn {
-        from {
-            transform: translateY(-20px);
-            opacity: 0;
-        }
-
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-
-    /* Scrollbar styling */
-    .modal-body::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .modal-body::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-
-    .modal-body::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 10px;
-    }
-
-    .modal-body::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8;
-    }
-
-    /* Responsive */
-    @media (max-height: 700px) {
-        .modal-body {
-            max-height: calc(100vh - 180px);
-        }
-    }
-
-    @media (max-width: 576px) {
-        .modal {
-            padding: 10px;
-        }
-
-        .modal-header {
-            padding: 16px 16px 12px;
-        }
-
-        .modal-body {
-            padding: 14px 16px;
-        }
-
-        .modal-footer {
-            padding: 10px 16px;
-        }
-    }
-</style>
 
 
 
