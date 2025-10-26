@@ -2,7 +2,7 @@
 include_once __DIR__ . '/../../controllers/CLogbook.php';
 
 
-$logbooks = CLogbook::_gi()->getAll('12345');
+$logbooks = CLogbook::_gi()->getById('12345');
 ?>
 
 <head>
