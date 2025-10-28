@@ -126,7 +126,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
 
 </div>
 
-
 <!-- Modal Edit Logbook -->
 <div id="modalEdit" class="modal">
     <div class="modal-content">
@@ -396,9 +395,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
         </form>
     </div>
 </div>
-
-
-
 
 
 <script>
