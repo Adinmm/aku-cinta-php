@@ -29,13 +29,13 @@ class CLogbook extends Databases {
 
     // Tambah logbook baru
     public function insertLogbook($data) {
-        // Pastikan foto selalu berupa array
+
         $foto = isset($data['foto']) && is_array($data['foto']) ? $data['foto'] : [];
 
         return $this->insert(
             'logbook',
-            ['mahasiswa_nim', 'tanggal', 'jkem', 'uraian', 'target', 'foto'],
-            [[$data['nim'], $data['tanggal'], $data['jkem'], $data['uraian'], $data['target'], json_encode($foto)]]
+            ['nama', 'mahasiswa_nim', 'tanggal', 'jkem', 'uraian', 'target', 'foto'],
+            [[$data['nama'],$data['nim'], $data['tanggal'], $data['jkem'], $data['uraian'], $data['target'], json_encode($foto)]]
         );
     }
 
@@ -45,12 +45,12 @@ class CLogbook extends Databases {
         return $this->delete('logbook', 'id', $id);
     }
     public function updateLogbook($id, $data) {
-        // Pastikan foto selalu berupa array
+  
         if (isset($data['foto']) && is_array($data['foto'])) {
             $data['foto'] = json_encode($data['foto']);
         }
 
-        // Hanya update field yang ada di array
+ 
         return $this->update('logbook', $data, 'id', $id);
     }
 

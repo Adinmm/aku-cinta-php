@@ -15,6 +15,7 @@ header('Content-Type: application/json');
 
 
 function handleInsert() {
+    $nama = "User";
     $nim = $_GET['nim'] ?? '12345';
     $tanggal = $_POST['tanggal'] ?? null;
     $jkem = $_POST['jkem'] ?? null;
@@ -24,6 +25,7 @@ function handleInsert() {
     $uploadedFiles = uploadFiles();
 
     $data = [
+        'nama' => $nama,
         'nim' => $nim,
         'tanggal' => $tanggal,
         'jkem' => $jkem,
@@ -50,38 +52,76 @@ function handleDelete() {
 }
 
 function handleEdit() {
-    $id = $_POST['id'] ?? null;
-    if (!$id) throw new Exception("ID tidak ada.");
+    try {
+        $id = $_POST['id'] ?? null;
+        if (!$id) throw new Exception("ID tidak ada.");
 
-    $logbookOld = CLogbook::_gi()->getLogbookById($id);
-    if (!$logbookOld) throw new Exception("Logbook tidak ditemukan!");
+        // Ambil data lama dari database
+        $logbookOld = CLogbook::_gi()->getLogbookById($id);
+        if (!$logbookOld) throw new Exception("Logbook tidak ditemukan!");
 
-    $tanggal = $_POST['tanggal'] ?? $logbookOld['tanggal'];
-    $jkem = $_POST['jkem'] ?? $logbookOld['jkem'];
-    $uraian = $_POST['uraian'] ?? $logbookOld['uraian'];
-    $target = $_POST['target'] ?? $logbookOld['target'];
+        $tanggal = $_POST['tanggal'] ?? $logbookOld['tanggal'];
+        $jkem    = $_POST['jkem'] ?? $logbookOld['jkem'];
+        $uraian  = $_POST['uraian'] ?? $logbookOld['uraian'];
+        $target  = $_POST['target'] ?? $logbookOld['target'];
 
-    $uploadedFiles = uploadFiles('foto');
-    if (empty($uploadedFiles)) {
-        $uploadedFiles = json_decode($logbookOld['foto'], true) ?? [];
+        // Ambil foto lama dari database
+        $oldFotos = json_decode($logbookOld['foto'], true) ?? [];
+
+        // Siapkan array hasil final (tetap 3 slot)
+        $finalFotos = $oldFotos;
+
+        // Loop tiap input foto1, foto2, foto3
+        foreach (['foto1', 'foto2', 'foto3'] as $index => $field) {
+            if (!empty($_FILES[$field]['name'])) {
+                $ext = pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION);
+                $newName = uniqid('foto_') . '.' . $ext;
+                $uploadPath = __DIR__ . '/../uploads/' . $newName;
+
+                if (move_uploaded_file($_FILES[$field]['tmp_name'], $uploadPath)) {
+                    // Hapus file lama kalau ada di slot ini
+                    if (isset($finalFotos[$index])) {
+                        $oldPath = __DIR__ . '/../uploads/' . basename($finalFotos[$index]);
+                        if (file_exists($oldPath)) unlink($oldPath);
+                    }
+
+                    // Ganti dengan foto baru di slot yang sama
+                    $finalFotos[$index] = $newName;
+                }
+            }
+        }
+
+        // Pastikan urutan array tetap rapi (tidak bolong)
+        $finalFotos = array_values($finalFotos);
+
+        // Data update
+        $data = [
+            'tanggal' => $tanggal,
+            'jkem'    => $jkem,
+            'uraian'  => $uraian,
+            'target'  => $target,
+            'foto'    => $finalFotos
+        ];
+
+        // Update database
+        CLogbook::_gi()->updateLogbook($id, $data);
+
+        echo json_encode([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data logbook berhasil diupdate sebagian.',
+            'logbook' => array_merge(['id' => $id], $data)
+        ]);
+
+    } catch (Exception $e) {
+        echo json_encode([
+            'status_code' => 400,
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ]);
     }
-
-    $data = [
-        'tanggal' => $tanggal,
-        'jkem' => $jkem,
-        'uraian' => $uraian,
-        'target' => $target,
-        'foto' => $uploadedFiles
-    ];
-
-    CLogbook::_gi()->updateLogbook($id, $data);
-
-    echo json_encode([
-        'status_code' => 200,
-        'status' => 'success',
-        'logbook' => array_merge(['id' => $id], $data)
-    ]);
 }
+
 
 function uploadFiles() {
     $uploadedFiles = [];

@@ -119,37 +119,13 @@ $students = CLogbook::_gi()->getAll();
     </p>
 
     <div style="  padding: 2rem;">
-
-        <div style="display: flex; align-items: end; gap: 10px;" class="mb-3 text-end margin-bottom: 10px;">
-
-
-            <button
-                type="button"
-                style="
-             padding: 0 10px;
-             display: inline-flex;
-             align-items: center;
-             gap: 6px;
-             cursor: pointer;
-             border: solid 1px #3954f0ff;
-             border-radius: 3px;
-             background-color: #3954f0ff;
-             color: white;
-             height: 25px;
-        
-         ">
-
-                <span style="font-size:1.3rem;">Kelompok</span>
-            </button>
-        </div>
-
         <div style="overflow-x:auto;">
             <table style="border-bottom: solid 1px #ccc;" class="table table-striped mt-2 width:100%; ">
                 <thead>
                     <tr>
                         <th style="width:5%; text-align:center;">No</th>
-                        <th style="width:12%; text-align:center;">Tanggal</th>
-                        <th style="min-width:10px; text-align:start;">JKEM</th>
+                        <th class="truncate" style=" width: 200px; white-space: nowrap; text-overflow: ellipsis;text-align:start;">Tanggal</th>
+                        <th class="truncate" style="width: 200px; white-space: nowrap; text-overflow: ellipsis;text-align:start;">Durasi (Jam)</th>
                         <th style="min-width:450px; text-align:start;">Uraian</th>
                         <th style="min-width:350px; text-align:start;">Target</th>
                         <th style="width:5%; text-align:center;">Foto</th>
@@ -169,7 +145,7 @@ $students = CLogbook::_gi()->getAll();
                         ?>
                             <tr>
                                 <td style="text-align:center;"><?= $i + 1 ?></td>
-                                <td style="text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
+                                <td class="truncate" style=" width: 200px;white-space: nowrap; text-overflow: ellipsis;text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
                                 <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?> </td>
                                 <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
                                     <?= htmlspecialchars($lb['uraian']) ?>
@@ -251,5 +227,4 @@ $students = CLogbook::_gi()->getAll();
             students.style.display = "none";
         }
     }
-
 </script>

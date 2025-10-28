@@ -16,12 +16,8 @@ $logbooks = CLogbook::_gi()->getById('12345');
     </p>
 
     <div class="content">
-        <div class="mb-3 text-end">
-            <button
-                class="btn-kelompok"
-                type="button">
-                <span style="font-size:1.3rem;">Kelompok</span>
-            </button>
+        <div class="mb-3">
+
             <button
                 class="btn-tambah"
                 data-bs-toggle="modal"
@@ -30,7 +26,7 @@ $logbooks = CLogbook::_gi()->getById('12345');
                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                 </svg>
 
-                <p>Tambah</p>
+                <p style="  margin: 0; line-height: 1; font-size: 1.5rem;">Tambah</p>
             </button>
         </div>
         <div style="overflow-x:auto;">
@@ -38,8 +34,8 @@ $logbooks = CLogbook::_gi()->getById('12345');
                 <thead>
                     <tr>
                         <th style="width:5%; text-align:center;">No</th>
-                        <th style="width:12%; text-align:center;">Tanggal</th>
-                        <th style="min-width:10px; text-align:start;">JKEM</th>
+                        <th class="truncate" style="  width: 200px;white-space: nowrap; text-overflow: ellipsis;text-align:start;">Tanggal</th>
+                        <th class="truncate" style="  width: 200px; white-space: nowrap; text-overflow: ellipsis;text-align:start;">Durasi (Jam)</th>
                         <th style="min-width:450px; text-align:start;">Uraian</th>
                         <th style="min-width:350px; text-align:start;">Target</th>
                         <th style="width:5%; text-align:center;">Foto</th>
@@ -59,7 +55,7 @@ $logbooks = CLogbook::_gi()->getById('12345');
                         ?>
                             <tr>
                                 <td style="text-align:center;"><?= $i + 1 ?></td>
-                                <td style="text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
+                                <td class="truncate" style="  width: 200px;white-space: nowrap; text-overflow: ellipsis;text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
                                 <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?> </td>
                                 <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
                                     <?= htmlspecialchars($lb['uraian']) ?>
@@ -71,7 +67,6 @@ $logbooks = CLogbook::_gi()->getById('12345');
                                     <?php
                                     if (!empty($lb['foto'])) {
                                         $fotos = json_decode($lb['foto'], true);
-
                                         if (is_array($fotos) && count($fotos) > 0) {
                                             $fotoNum = 1;
 
@@ -109,7 +104,7 @@ $logbooks = CLogbook::_gi()->getById('12345');
                         <?php endforeach; ?>
                         <tr class="total-footer">
                             <td colspan="2">Total</td>
-                            <td><?= number_format($totalJkem) ?> Jam</td>
+                            <td colspan="2"><?= number_format($totalJkem) ?> Jam</td>
                             <td colspan="4"></td>
 
                         </tr>
@@ -137,134 +132,188 @@ $logbooks = CLogbook::_gi()->getById('12345');
 
 <!-- Modal Edit Logbook -->
 <div id="modalEdit" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeEditModal()">&times;</span>
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
 
-    <div class="modal-header">
-      <div>
-        <h4 style="text-align: center; font-size: 2.5rem;">Edit</h4>
-        <p style="text-align: center;">Logbook PKL</p>
-      </div>
-    </div>
-
-    <form id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
-      <input type="hidden" name="id" id="edit_id" />
-
-      <div style="background-color: #f5f5f5; width: 100%; padding: 10px 0;">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="edit_tanggal">Tanggal <span>*</span></label>
-            <input type="date" name="tanggal" id="edit_tanggal" class="form-control" required />
-          </div>
-
-          <div class="form-group">
-            <label for="edit_jkem">JKEM <span>*</span></label>
-            <div class="input-group">
-              <input
-                type="number"
-                name="jkem"
-                id="edit_jkem"
-                class="form-control"
-                placeholder="Masukkan JKEM"
-                required
-              />
-                <span style="font-size: 12px; color: #000000;" class="input-addon">Jam</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="edit_uraian">Uraian <span>*</span></label>
-            <textarea
-              name="uraian"
-              id="edit_uraian"
-              class="form-control"
-              placeholder="Masukkan uraian"
-              rows="5"
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="edit_target">Target <span>*</span></label>
-            <textarea
-              name="target"
-              id="edit_target"
-              class="form-control"
-              placeholder="Masukkan target"
-              rows="5"
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="edit_foto1">Foto </label>
+        <div class="modal-header">
             <div>
-              <input
-                type="file"
-                name="foto1"
-                id="edit_foto1"
-                class="form-control-file"
-                accept=".jpg,.jpeg,.png"
-              />
-              <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
+                <h4 style="text-align: center; font-size: 2.5rem;">Edit</h4>
+                <p style="text-align: center;">Logbook PKL</p>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label for="edit_foto2"></label>
-            <div>
-              <input
-                type="file"
-                name="foto2"
-                id="edit_foto2"
-                class="form-control-file"
-                accept=".jpg,.jpeg,.png"
-              />
-              <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="edit_foto3"></label>
-            <div>
-              <input
-                type="file"
-                name="foto3"
-                id="edit_foto3"
-                class="form-control-file"
-                accept=".jpg,.jpeg,.png"
-              />
-              <span>Format dokumen scan <span class="text-danger">jpg/jpeg, png</span></span>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
-        <button type="submit" class="btn btn-success btn-simpan">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-floppy"
-            viewBox="0 0 16 16"
-          >
-            <path d="M11 2H9v3h2z" />
-            <path
-              d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"
-            />
-          </svg>
-          <p>Update</p>
-        </button>
-      </div>
-    </form>
-  </div>
+        <form id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
+            <input type="hidden" name="id" id="edit_id" />
+
+            <div style="background-color: #f5f5f5; width: 100%; padding: 10px 0;">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit_tanggal">Tanggal <span>*</span></label>
+                        <input type="date" name="tanggal" id="edit_tanggal" class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit_jkem">JKEM <span>*</span></label>
+                        <div class="input-group">
+                            <input
+                                type="number"
+                                name="jkem"
+                                id="edit_jkem"
+                                class="form-control"
+                                placeholder="Masukkan JKEM"
+                                required />
+                            <span style="font-size: 12px; color: #000000;" class="input-addon">Jam</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit_uraian">Uraian <span>*</span></label>
+                        <textarea
+                            name="uraian"
+                            id="edit_uraian"
+                            class="form-control"
+                            placeholder="Masukkan uraian"
+                            rows="5"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit_target">Target <span>*</span></label>
+                        <textarea
+                            name="target"
+                            id="edit_target"
+                            class="form-control"
+                            placeholder="Masukkan target"
+                            rows="5"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit_foto1" class="font-weight-bold">Foto 1</label>
+                        <div>
+                            <input
+                                type="file"
+                                name="foto1"
+                                id="edit_foto1"
+                                class="form-control-file"
+                                accept=".jpg,.jpeg,.png" />
+                            <small class="text-muted d-block mt-1">
+                                Format dokumen scan <span class="text-danger">JPG, JPEG, PNG</span>
+                            </small>
+
+                            <?php
+                            if (!empty($lb['foto'])) {
+                                $fotos = json_decode($lb['foto'], true);
+                                if (is_array($fotos) && isset($fotos[0])) {
+                                    $foto = $fotos[0];
+                                    $filePath = 'http://localhost:8080/uploads/' . htmlspecialchars($foto);
+                                    echo '<div class="mt-2 p-2" style="display: inline-flex; align-items: center; gap: 6px;">';
+                                    echo '<i class="fa fa-download" style="font-size:16px; line-height:1; color:blue;"></i>';
+                                    echo '<a href="' . $filePath . '" download title="Download Foto" >#1</a>';
+                                    echo '</div>';
+                                } else {
+                                    echo '<p style="color:red;" class="text-muted mt-2">Tidak ada foto.</p>';
+                                }
+                            } else {
+                                echo '<p style="color:red;" class="text-muted mt-2">Tidak ada foto.</p>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="edit_foto2" class="font-weight-bold">Foto 2</label>
+                        <div>
+                            <input
+                                type="file"
+                                name="foto2"
+                                id="edit_foto2"
+                                class="form-control-file"
+                                accept=".jpg,.jpeg,.png" />
+                            <small class="text-muted d-block mt-1">
+                                Format dokumen scan <span class="text-danger">JPG, JPEG, PNG</span>
+                            </small>
+
+                            <?php
+                            if (!empty($lb['foto'])) {
+                                $fotos = json_decode($lb['foto'], true);
+                                if (is_array($fotos) && isset($fotos[1])) {
+                                    $foto = $fotos[1];
+                                    $filePath = 'http://localhost:8080/uploads/' . htmlspecialchars($foto);
+                                    echo '<div class="mt-2 p-2" style="display: inline-flex; align-items: center; gap: 6px;">';
+                                    echo '<i class="fa fa-download" style="font-size:16px; line-height:1; color:blue;"></i>';
+                                    echo '<a href="' . $filePath . '" download title="Download Foto" >#2</a>';
+                                    echo '</div>';
+                                } else {
+                                    echo '<p style="color:red;" class="text-muted mt-2">Tidak ada foto.</p>';
+                                }
+                            } else {
+                                echo '<p style="color:red;" class="text-muted mt-2">Tidak ada foto.</p>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="edit_foto3" class="font-weight-bold">Foto 3</label>
+                        <div>
+                            <input
+                                type="file"
+                                name="foto3"
+                                id="edit_foto3"
+                                class="form-control-file"
+                                accept=".jpg,.jpeg,.png" />
+                            <small class="text-muted d-block mt-1">
+                                Format dokumen scan <span class="text-danger">JPG, JPEG, PNG</span>
+                            </small>
+
+                            <?php
+                            if (!empty($lb['foto'])) {
+                                $fotos = json_decode($lb['foto'], true);
+                                if (is_array($fotos) && isset($fotos[2])) {
+                                    $foto = $fotos[2];
+                                    $filePath = 'http://localhost:8080/uploads/' . htmlspecialchars($foto);
+                                    echo '<div class="mt-2 p-2 text-white rounded" style="display: inline-flex; align-items: center; gap: 6px;">';
+                                    echo '<div class="mt-2 p-2" style="display: inline-flex; align-items: center; gap: 6px;">';
+                                    echo '<i class="fa fa-download" style="font-size:16px; line-height:1; color:blue;"></i>';
+                                    echo '<a href="' . $filePath . '" download title="Download Foto" >#3</a>';
+                                    echo '</div>';
+                                } else {
+                                    echo '<p style="color:red;" class="text-muted mt-2">Tidak ada foto.</p>';
+                                }
+                            } else {
+                                echo '<p style="color:red;" class="text-muted mt-2">Tidak ada foto.</p>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+                <button type="submit" class="btn btn-success btn-simpan">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-floppy"
+                        viewBox="0 0 16 16">
+                        <path d="M11 2H9v3h2z" />
+                        <path
+                            d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z" />
+                    </svg>
+                    <p>Update</p>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- Modal Tambah -->
-<div id="modalTambah" class="modal">
+<div id="modalTambah" enctype="multipart/form-data" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModalTambah()">&times;</span>
         <div class="modal-header">
@@ -285,20 +334,19 @@ $logbooks = CLogbook::_gi()->getById('12345');
                         <input type="date" name="tanggal" id="tanggal" class="form-control" required>
                     </div>
 
-                       <div class="form-group">
-            <label for="edit_jkem">JKEM <span>*</span></label>
-            <div class="input-group">
-              <input
-                type="number"
-                name="jkem"
-                id="edit_jkem"
-                class="form-control"
-                placeholder="Masukkan JKEM"
-                required
-              />
-              <span style="font-size: 12px; color: #000000;" class="input-addon">Jam</span>
-            </div>
-          </div>
+                    <div class="form-group">
+                        <label for="edit_jkem">JKEM <span>*</span></label>
+                        <div class="input-group">
+                            <input
+                                type="number"
+                                name="jkem"
+                                id="edit_jkem"
+                                class="form-control"
+                                placeholder="Masukkan JKEM"
+                                required />
+                            <span style="font-size: 12px; color: #000000;" class="input-addon">Jam</span>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label for="uraian">Uraian <span>*</span></label>
@@ -475,6 +523,7 @@ $logbooks = CLogbook::_gi()->getById('12345');
 
             if (data.status === 'success') {
                 btn.closest('tr').remove();
+                window.location.reload();
             } else alert('❌ Gagal menghapus logbook!');
         } catch (err) {
             console.error(err);
@@ -498,9 +547,6 @@ $logbooks = CLogbook::_gi()->getById('12345');
         document.getElementById('edit_jkem').value = logbook.jkem;
         document.getElementById('edit_uraian').value = logbook.uraian;
         document.getElementById('edit_target').value = logbook.target;
-
-
-
 
         openModalEdit();
     }
