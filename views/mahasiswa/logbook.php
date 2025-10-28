@@ -2,7 +2,7 @@
 include_once __DIR__ . '/../../controllers/CLogbook.php';
 
 
-$logbooks = CLogbook::_gi()->getById('12345');
+$logbooks = CLogbook::_gi()->getById('F1D021001');
 ?>
 
 <head>
@@ -125,7 +125,6 @@ $logbooks = CLogbook::_gi()->getById('12345');
     </div>
 
 </div>
-
 
 
 <!-- Modal Edit Logbook -->
@@ -416,7 +415,6 @@ $logbooks = CLogbook::_gi()->getById('12345');
     function openModal() {
         modal.style.display = 'flex';
     }
-
 
     window.onclick = (event) => {
         if (event.target === modal) closeModal();
