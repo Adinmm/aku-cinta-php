@@ -55,7 +55,7 @@ $logbooks = CLogbook::_gi()->getById('12345');
                         ?>
                             <tr>
                                 <td style="text-align:center;"><?= $i + 1 ?></td>
-                                <td class="truncate" style="  width: 200px;white-space: nowrap; text-overflow: ellipsis;text-align:center;"><?= htmlspecialchars($lb['tanggal']) ?></td>
+                                <td class="truncate" style="  width: 200px;white-space: nowrap; text-overflow: ellipsis;text-align:start;"><?= htmlspecialchars($lb['tanggal']) ?></td>
                                 <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?> </td>
                                 <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
                                     <?= htmlspecialchars($lb['uraian']) ?>
@@ -128,8 +128,6 @@ $logbooks = CLogbook::_gi()->getById('12345');
 
 
 
-
-
 <!-- Modal Edit Logbook -->
 <div id="modalEdit" class="modal">
     <div class="modal-content">
@@ -153,7 +151,7 @@ $logbooks = CLogbook::_gi()->getById('12345');
                     </div>
 
                     <div class="form-group">
-                        <label for="edit_jkem">JKEM <span>*</span></label>
+                        <label for="edit_jkem">Durasi<span>*</span></label>
                         <div class="input-group">
                             <input
                                 type="number"
@@ -233,7 +231,6 @@ $logbooks = CLogbook::_gi()->getById('12345');
                             <small class="text-muted d-block mt-1">
                                 Format dokumen scan <span class="text-danger">JPG, JPEG, PNG</span>
                             </small>
-
                             <?php
                             if (!empty($lb['foto'])) {
                                 $fotos = json_decode($lb['foto'], true);
@@ -335,7 +332,7 @@ $logbooks = CLogbook::_gi()->getById('12345');
                     </div>
 
                     <div class="form-group">
-                        <label for="edit_jkem">JKEM <span>*</span></label>
+                        <label for="edit_jkem">Durasi <span>*</span></label>
                         <div class="input-group">
                             <input
                                 type="number"
