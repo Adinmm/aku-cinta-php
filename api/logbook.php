@@ -15,16 +15,15 @@ header('Content-Type: application/json');
 
 
 function handleInsert() {
-    $nama = "Ahmad Sulaiman";
+    $nama = "Ahmad Rizki";
     $nim = $_GET['nim'] ?? 'F1D021001';
     $tanggal = $_POST['tanggal'] ?? null;
     $jkem = $_POST['jkem'] ?? null;
     $uraian = $_POST['uraian'] ?? null;
     $target = $_POST['target'] ?? null;
-
     $uploadedFiles = uploadFiles();
-
     $data = [
+        'seminar_id' => "1",
         'nama' => $nama,
         'nim' => $nim,
         'tanggal' => $tanggal,
@@ -58,6 +57,7 @@ function handleEdit() {
         $logbookOld = CLogbook::_gi()->getLogbookById($id);
         if (!$logbookOld) throw new Exception("Logbook tidak ditemukan!");
 
+        $seminar_id = $logbookOld['seminar_id'];
         $tanggal = $_POST['tanggal'] ?? $logbookOld['tanggal'];
         $jkem    = $_POST['jkem'] ?? $logbookOld['jkem'];
         $uraian  = $_POST['uraian'] ?? $logbookOld['uraian'];
@@ -73,7 +73,7 @@ function handleEdit() {
                 $uploadPath = __DIR__ . '/../uploads/' . $newName;
 
                 if (move_uploaded_file($_FILES[$field]['tmp_name'], $uploadPath)) {
-    
+
                     if (isset($finalFotos[$index])) {
                         $oldPath = __DIR__ . '/../uploads/' . basename($finalFotos[$index]);
                         if (file_exists($oldPath)) unlink($oldPath);
@@ -85,6 +85,7 @@ function handleEdit() {
         $finalFotos = array_values($finalFotos);
 
         $data = [
+            'seminar_id' => $seminar_id,
             'tanggal' => $tanggal,
             'jkem'    => $jkem,
             'uraian'  => $uraian,
@@ -100,7 +101,6 @@ function handleEdit() {
             'message' => 'Data logbook berhasil diupdate sebagian.',
             'data' => array_merge(['id' => $id], $data)
         ]);
-
     } catch (Exception $e) {
         echo json_encode([
             'status_code' => 400,

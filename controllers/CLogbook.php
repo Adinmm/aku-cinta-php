@@ -42,8 +42,8 @@ class CLogbook extends Databases {
 
         return $this->insert(
             'logbook',
-            ['nama', 'mahasiswa_nim', 'tanggal', 'jkem', 'uraian', 'target', 'foto'],
-            [[$data['nama'], $data['nim'], $data['tanggal'], $data['jkem'], $data['uraian'], $data['target'], json_encode($foto)]]
+            ['seminar_id', 'nama', 'mahasiswa_nim', 'tanggal', 'jkem', 'uraian', 'target', 'foto'],
+            [[$data['seminar_id'], $data['nama'], $data['nim'], $data['tanggal'], $data['jkem'], $data['uraian'], $data['target'], json_encode($foto)]]
         );
     }
 
