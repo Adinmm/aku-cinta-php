@@ -28,8 +28,8 @@ $students = CLogbook::_gi()->getAll();
                         <th style="width:5%; text-align:center;">No</th>
                         <th style="width:12%; text-align:center;">Nama</th>
                         <th style="min-width:10px; text-align:start;">NIM</th>
-                        <th style="width:20%; text-align:center;">Foto</th>
-                        <th style="width:5%; text-align:center;">Status</th>
+                        <th style=" width:20px; text-align:center;">Foto</th>
+                        <th style="width:20%; text-align:center;">Status</th>
                         <th style="width:20%; text-align:center;">#</th>
                     </tr>
                 </thead>
@@ -115,7 +115,7 @@ $students = CLogbook::_gi()->getAll();
         display: none;
         margin-top: 20px;
       ">
-       
+
         <div style="display: flex; width: 100%; justify-content: space-between; align-items: center; border-bottom: solid 1px #ccc; padding: 2rem;">
             <p style=" font-size: 1.5rem; font-weight: bold;">
                 Periode 2025 (Ganjil)
@@ -225,7 +225,7 @@ $students = CLogbook::_gi()->getAll();
         window.location.href = `logbook?nim=${nim}`;
     }
 
-    back.addEventListener("click", ()=>{
+    back.addEventListener("click", () => {
         window.location.href = "logbook";
     })
 
