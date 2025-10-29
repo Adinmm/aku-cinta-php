@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Waktu pembuatan: 28 Okt 2025 pada 12.23
+-- Waktu pembuatan: 29 Okt 2025 pada 04.50
 -- Versi server: 8.0.43
 -- Versi PHP: 8.3.26
 
@@ -80,31 +80,27 @@ INSERT INTO `dosen` (`dosen_kode`, `dosen_nip`, `dosen_nidn`, `dosen_nama`, `dos
 
 CREATE TABLE `logbook` (
   `id` int NOT NULL,
-  `nama` text NOT NULL,
-  `mahasiswa_nim` varchar(20) NOT NULL,
-  `jkem` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `tanggal` date NOT NULL,
-  `uraian` text NOT NULL,
-  `target` text,
-  `foto` text,
+  `seminar_id` int DEFAULT NULL,
+  `nama` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `mahasiswa_nim` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `jkem` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tanggal` date DEFAULT NULL,
+  `uraian` text COLLATE utf8mb4_general_ci,
+  `target` text COLLATE utf8mb4_general_ci,
+  `foto` json DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `logbook`
 --
 
-INSERT INTO `logbook` (`id`, `nama`, `mahasiswa_nim`, `jkem`, `tanggal`, `uraian`, `target`, `foto`, `created_at`) VALUES
-(1, 'Ahmad Sulaiman', 'F1D021001', '3', '2025-01-05', 'Jalan rusak di depan pasar desa A menyebabkan genangan.', 'Perbaikan jalan dalam 14 hari', '[\"foto_jalan_01.jpg\",\"foto_jalan_02.jpg\"]', '2025-10-28 12:09:30'),
-(2, 'Siti Nurhaliza', 'F1D021002', '5', '2025-01-12', 'Pelayanan puskesmas lambat pada jam kerja siang.', 'Evaluasi pelayanan 1 minggu', '[\"puskesmas_01.jpg\"]', '2025-10-28 12:09:30'),
-(3, 'Budi Santoso', 'F1D021003', '2', '2025-02-03', 'Lampu jalan mati sepanjang blok B.', 'Pemasangan lampu 10 titik', '[\"lampu_01.jpg\",\"lampu_02.jpg\",\"lampu_03.jpg\"]', '2025-10-28 12:09:30'),
-(4, 'Dewi Lestari', 'F1D021004', '7', '2025-02-20', 'Sampah menumpuk di tempat pembuangan sementara.', 'Pengangkutan sampah harian', '[\"sampah_01.jpg\"]', '2025-10-28 12:09:30'),
-(5, 'Muhammad Ali', 'F1D021005', '1', '2025-03-04', 'Atap ruang kelas bocor ketika hujan deras.', 'Perbaikan atap 7 hari kerja', '[\"atap_01.jpg\",\"atap_02.jpg\"]', '2025-10-28 12:09:30'),
-(6, 'Nina Kartika', 'F1D021006', '8', '2025-03-18', 'Stok obat diabetes habis di puskesmas.', 'Pengadaan obat 3 hari', '[\"obat_01.jpg\"]', '2025-10-28 12:09:30'),
-(7, 'Rudi Hartono', 'F1D021007', '4', '2025-04-01', 'Angkutan desa tidak layak jalan dan sering mogok.', 'Penggantian armada 1 bulan', '[\"angkutan_01.jpg\",\"angkutan_02.jpg\"]', '2025-10-28 12:09:30'),
-(8, 'Kartika Putri', 'F1D021008', '6', '2025-04-10', 'Irigasi tersumbat pada saluran sawah RT 02.', 'Pembersihan saluran sebelum tanam', '[\"irigasi_01.jpg\"]', '2025-10-28 12:09:30'),
-(9, 'Hendra Wijaya', 'F1D021009', '10', '2025-04-22', 'Pencurian ternak terjadi di malam hari.', 'Patroli tambahan 14 hari', '[\"ternak_01.jpg\",\"lokasi_01.jpg\"]', '2025-10-28 12:09:30'),
-(10, 'Rina Marlina', 'F1D021010', '9', '2025-05-06', 'Keluarga X butuh bantuan sembako mendesak.', 'Distribusi sembako 3 hari', '[\"sembako_01.jpg\"]', '2025-10-28 12:09:30');
+INSERT INTO `logbook` (`id`, `seminar_id`, `nama`, `mahasiswa_nim`, `jkem`, `tanggal`, `uraian`, `target`, `foto`, `created_at`) VALUES
+(1, 1, 'Ahmad Rizki', 'F1D021001', '6', '2025-10-20', 'Membuat tampilan awal halaman seminar', 'Selesai desain UI', '[\"foto_ui1.jpg\", \"foto_ui2.jpg\"]', '2025-10-29 01:34:06'),
+(2, 2, 'Siti Nuraini', 'F1D021002', '9', '2025-10-21', 'Mendesain struktur tabel untuk seminar', 'Selesai tabel awal', '[\"db_schema.png\", \"db_relation.jpg\"]', '2025-10-29 01:34:06'),
+(3, 3, 'Muhammad Daffa', 'F1D021003', '10', '2025-10-22', 'Implementasi komponen React untuk form seminar', 'Integrasi API form', '[\"react_form.png\", \"form_submit.jpg\"]', '2025-10-29 01:34:06'),
+(4, 4, 'Nurul Hidayah', 'F1D021004', '5', '2025-10-23', 'Membuat API CRUD seminar', 'Selesai endpoint POST dan GET', '[\"api_test1.png\", \"postman_result.png\"]', '2025-10-29 01:34:06'),
+(5, 5, 'Lukman Hakim', 'F1D021005', '8', '2025-10-24', 'Menghubungkan logbook dengan seminar', 'Testing relasi database', '[\"relasi_er.png\", \"testing_result.jpg\"]', '2025-10-29 01:34:06');
 
 -- --------------------------------------------------------
 
@@ -311,6 +307,42 @@ INSERT INTO `prodi` (`prodi_id`, `prodi_nama`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `seminar`
+--
+
+CREATE TABLE `seminar` (
+  `seminar_id` int NOT NULL,
+  `pengajuan_id` int DEFAULT NULL,
+  `seminar_judul` text COLLATE utf8mb4_general_ci,
+  `seminar_tempat` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `seminar_nomor` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `seminar_data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `seminar_nilai` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `seminar_upload` text COLLATE utf8mb4_general_ci,
+  `seminar_ttd` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `seminar_tanggal` date DEFAULT NULL,
+  `seminar_jam` varchar(25) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `seminar_waktu` datetime DEFAULT NULL,
+  `seminar_waktu_update` datetime DEFAULT NULL,
+  `seminar_status` tinyint(1) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `seminar`
+--
+
+INSERT INTO `seminar` (`seminar_id`, `pengajuan_id`, `seminar_judul`, `seminar_tempat`, `seminar_nomor`, `seminar_data`, `seminar_nilai`, `seminar_upload`, `seminar_ttd`, `seminar_tanggal`, `seminar_jam`, `seminar_waktu`, `seminar_waktu_update`, `seminar_status`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Implementasi Sistem Informasi Pertanian di Kabupaten Sumbawa', 'Aula Dinas Pertanian Sumbawa', 'SMR-001', 'Data peserta lengkap dan sudah diverifikasi', 'A', 'upload_berkas_1.pdf', 'ttd_ketua_1.png', '2025-10-30', '09:00', '2025-10-30 09:00:00', NULL, 0, '2025-10-29 01:23:42', '2025-10-29 01:46:28'),
+(2, 2, 'Rancang Bangun Website Wisata Desa Pemepek', 'Ruang Seminar Universitas Mataram', 'SMR-002', 'Data presentasi sudah diterima', 'B+', 'upload_berkas_2.pdf', 'ttd_ketua_2.png', '2025-11-02', '10:30', '2025-11-02 10:30:00', NULL, 1, '2025-10-29 01:23:42', '2025-10-29 01:23:42'),
+(3, 3, 'Analisis Keamanan Jaringan pada Infrastruktur Kampus', 'Gedung FTI Lantai 3', 'SMR-003', 'Masih menunggu validasi nilai', NULL, 'upload_berkas_3.pdf', NULL, '2025-11-05', '13:00', '2025-11-05 13:00:00', NULL, 0, '2025-10-29 01:23:42', '2025-10-29 01:23:42'),
+(4, 4, 'Pengembangan Aplikasi Pemesanan Produk Lokal Berbasis Web', 'Aula Fakultas Ekonomi', 'SMR-004', 'Data seminar sudah lengkap', 'A-', 'upload_berkas_4.pdf', 'ttd_ketua_4.png', '2025-11-07', '08:30', '2025-11-07 08:30:00', NULL, 1, '2025-10-29 01:23:42', '2025-10-29 01:23:42'),
+(5, 5, 'Penerapan Machine Learning untuk Prediksi Cuaca Pertanian', 'Ruang Lab Informatika 2', 'SMR-005', 'Data pengujian model telah disetujui', 'A', 'upload_berkas_5.pdf', 'ttd_ketua_5.png', '2025-11-10', '11:00', '2025-11-10 11:00:00', NULL, 1, '2025-10-29 01:23:42', '2025-10-29 01:23:42');
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `tempat`
 --
 
@@ -351,7 +383,8 @@ ALTER TABLE `dosen`
 -- Indeks untuk tabel `logbook`
 --
 ALTER TABLE `logbook`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_logbook_seminar` (`seminar_id`);
 
 --
 -- Indeks untuk tabel `mahasiswa`
@@ -411,6 +444,12 @@ ALTER TABLE `prodi`
   ADD PRIMARY KEY (`prodi_id`);
 
 --
+-- Indeks untuk tabel `seminar`
+--
+ALTER TABLE `seminar`
+  ADD PRIMARY KEY (`seminar_id`);
+
+--
 -- Indeks untuk tabel `tempat`
 --
 ALTER TABLE `tempat`
@@ -430,13 +469,13 @@ ALTER TABLE `bimbingan`
 -- AUTO_INCREMENT untuk tabel `logbook`
 --
 ALTER TABLE `logbook`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `operator`
 --
 ALTER TABLE `operator`
-  MODIFY `operator_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `operator_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `pengajuan`
@@ -469,6 +508,12 @@ ALTER TABLE `prodi`
   MODIFY `prodi_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT untuk tabel `seminar`
+--
+ALTER TABLE `seminar`
+  MODIFY `seminar_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT untuk tabel `tempat`
 --
 ALTER TABLE `tempat`
@@ -490,6 +535,12 @@ ALTER TABLE `bimbingan`
 --
 ALTER TABLE `dosen`
   ADD CONSTRAINT `dosen_ibfk_1` FOREIGN KEY (`prodi_id`) REFERENCES `prodi` (`prodi_id`) ON DELETE SET NULL;
+
+--
+-- Ketidakleluasaan untuk tabel `logbook`
+--
+ALTER TABLE `logbook`
+  ADD CONSTRAINT `fk_logbook_seminar` FOREIGN KEY (`seminar_id`) REFERENCES `seminar` (`seminar_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `mahasiswa`
