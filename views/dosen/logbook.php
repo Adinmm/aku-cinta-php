@@ -75,6 +75,7 @@ $students = CLogbook::_gi()->getAllMahasiswa();
                             <th class="truncate" style=" width: 200px; white-space: nowrap; text-overflow: ellipsis;text-align:start;">Tanggal</th>
                             <th class="truncate" style="width: 200px; white-space: nowrap; text-overflow: ellipsis;text-align:start;">Target</th>
                             <th style="min-width:450px; text-align:start;">Uraian</th>
+                            <th style="text-align:center;">#</th>
                         </tr>
                     </thead>
                     <tbody id="logbookTableBody">
@@ -95,7 +96,31 @@ $students = CLogbook::_gi()->getAllMahasiswa();
                                     <td style="text-align:left;" title="<?= htmlspecialchars($lb['target']) ?>">
                                         <?= htmlspecialchars($lb['target']) ?>
                                     </td>
+                                    <td style="text-align:center; display:flex; justify-content:center;" >
+                                        <?php
+                                        $fotos = json_decode($lb['foto'], true) ?? [];
+                                        if (!empty($fotos)):
+                                        ?>
+                                            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                                <?php foreach ($fotos as $f):
+                                                    if ($f):
+                                                ?>
+                                                        <a href="<?= "http://localhost:8080/uploads/$f" ?>" target="_blank" title="Klik untuk lihat">
+                                                            <img src="<?= "http://localhost:8080/uploads/$f" ?>"
+                                                                style="width:60px; height:60px; object-fit:cover; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2); transition: transform 0.2s;"
+                                                                onmouseover="this.style.transform='scale(1.1)'"
+                                                                onmouseout="this.style.transform='scale(1)'">
+                                                        </a>
+                                                <?php endif;
+                                                endforeach; ?>
+                                            </div>
+                                        <?php else: ?>
+                                            -
+                                        <?php endif; ?>
+                                    </td>
+
                                 </tr>
+
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </tbody>
