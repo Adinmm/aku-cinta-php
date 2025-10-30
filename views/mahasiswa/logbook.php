@@ -1,8 +1,12 @@
 <?php
 include_once __DIR__ . '/../../controllers/CLogbook.php';
 
-
-$logbooks = CLogbook::_gi()->getById('F1D021001');
+$nim = $_GET['nim'] ?? null;
+if (!$nim) {
+    echo json_encode(['status' => 'error', 'message' => 'NIM tidak ditemukan']);
+    exit;
+}
+$logbooks = CLogbook::_gi()->getById($nim);
 ?>
 
 <head>
@@ -10,11 +14,9 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
 </head>
 
 <div class="logbook-root">
-
     <p class="logbook-periode">
         Periode 2025 (Ganjil)
     </p>
-
     <div class="content">
         <div class="mb-3">
 
@@ -35,7 +37,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
                     <tr>
                         <th style="width:5%; text-align:center;">No</th>
                         <th class="truncate" style="  width: 200px;white-space: nowrap; text-overflow: ellipsis;text-align:start;">Tanggal</th>
-                        <th class="truncate" style="  width: 200px; white-space: nowrap; text-overflow: ellipsis;text-align:start;">Durasi (Jam)</th>
                         <th style="min-width:450px; text-align:start;">Uraian</th>
                         <th style="min-width:350px; text-align:start;">Target</th>
                         <th style="width:5%; text-align:center;">Foto</th>
@@ -49,14 +50,11 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
                         </tr>
                     <?php else: ?>
                         <?php
-                        $totalJkem = 0; // Inisialisasi total JKEM
                         foreach ($logbooks as $i => $lb):
-                            $totalJkem += (float)$lb['jkem']; // Tambahkan JKEM ke total
                         ?>
                             <tr>
                                 <td style="text-align:center;"><?= $i + 1 ?></td>
                                 <td class="truncate" style="  width: 200px;white-space: nowrap; text-overflow: ellipsis;text-align:start;"><?= htmlspecialchars($lb['tanggal']) ?></td>
-                                <td style="text-align:left;"><?= htmlspecialchars($lb['jkem']) ?> </td>
                                 <td style="text-align:left;" title="<?= htmlspecialchars($lb['uraian']) ?>">
                                     <?= htmlspecialchars($lb['uraian']) ?>
                                 </td>
@@ -102,24 +100,13 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                        <tr class="total-footer">
-                            <td colspan="2">Total</td>
-                            <td colspan="2"><?= number_format($totalJkem) ?> Jam</td>
-                            <td colspan="4"></td>
-
-                        </tr>
-
-
                     <?php endif; ?>
                 </tbody>
             </table>
-
         </div>
-
     </div>
     <div style="border-top: solid 1px #ccc; padding-top: 10px; padding: 20px; margin-top: 30px;">
         <p>
-
             * Isian wajib (*) harus diisi, jika belum melengkapi semua isian wajib maka logbook tidak dapat dilanjutkan.
         </p>
     </div>
@@ -137,31 +124,14 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
                 <p style="text-align: center;">Logbook PKL</p>
             </div>
         </div>
-
         <form id="logbookEditForm" method="post" enctype="multipart/form-data" action="proses_edit_logbook.php">
             <input type="hidden" name="id" id="edit_id" />
-
             <div style="background-color: #f5f5f5; width: 100%; padding: 10px 0;">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit_tanggal">Tanggal <span>*</span></label>
                         <input type="date" name="tanggal" id="edit_tanggal" class="form-control" required />
                     </div>
-
-                    <div class="form-group">
-                        <label for="edit_jkem">Durasi<span>*</span></label>
-                        <div class="input-group">
-                            <input
-                                type="number"
-                                name="jkem"
-                                id="edit_jkem"
-                                class="form-control"
-                                placeholder="Masukkan JKEM"
-                                required />
-                            <span style="font-size: 12px; color: #000000;" class="input-addon">Jam</span>
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <label for="edit_uraian">Uraian <span>*</span></label>
                         <textarea
@@ -172,7 +142,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
                             rows="5"
                             required></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="edit_target">Target <span>*</span></label>
                         <textarea
@@ -318,7 +287,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
             </div>
 
         </div>
-
         <form id="logbookForm" method="post" enctype="multipart/form-data" action="proses_tambah_logbook.php">
             <div style="background-color: #f5f5f5; width: 100%; padding: 10px 0;">
 
@@ -330,24 +298,9 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
                     </div>
 
                     <div class="form-group">
-                        <label for="edit_jkem">Durasi <span>*</span></label>
-                        <div class="input-group">
-                            <input
-                                type="number"
-                                name="jkem"
-                                id="edit_jkem"
-                                class="form-control"
-                                placeholder="Masukkan JKEM"
-                                required />
-                            <span style="font-size: 12px; color: #000000;" class="input-addon">Jam</span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="uraian">Uraian <span>*</span></label>
                         <textarea name="uraian" id="uraian" class="form-control" placeholder="Masukkan uraian" rows="5" required></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="target">Target <span>*</span></label>
                         <textarea name="target" id="target" class="form-control" placeholder="Masukkan target" rows="5" required></textarea>
@@ -361,7 +314,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
                         </div>
 
                     </div>
-
                     <div class="form-group">
                         <label for="foto2"></label>
                         <div>
@@ -396,7 +348,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
     </div>
 </div>
 
-
 <script>
     const form = document.getElementById('logbookForm');
     const modal = document.getElementById('modalTambah');
@@ -425,11 +376,10 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
 
         const formData = new FormData(form);
         formData.append('action', 'insert');
-
-
-
+        const urlParams = new URLSearchParams(window.location.search);
+        const nim = urlParams.get('nim');
         try {
-            const res = await fetch('http://localhost:8080/api/logbook.php', {
+            const res = await fetch(`http://localhost:8080/api/logbook.php?nim=${nim}`, {
                 method: 'POST',
                 body: formData
             });
@@ -459,7 +409,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
                 newRow.innerHTML = `
                 <td>${tbody.children.length + 1}</td>
                 <td>${logbook.tanggal || '-'}</td>
-                <td>${logbook.jkem || '-'}</td>
                 <td>${logbook.uraian || '-'}</td>
                 <td>${logbook.target || '-'}</td>
                 <td>${fotos}</td>
@@ -516,17 +465,13 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
 
 
     function editLogbook(id) {
-        // Ambil data logbook berdasarkan ID (bisa dari array JS atau fetch API)
         const logbook = <?= json_encode($logbooks) ?>.find(lb => lb.id == id);
         if (!logbook) {
             alert('Logbook tidak ditemukan!');
             return;
         }
-
-        // Isi form edit dengan data logbook
         document.getElementById('edit_id').value = logbook.id;
         document.getElementById('edit_tanggal').value = logbook.tanggal;
-        document.getElementById('edit_jkem').value = logbook.jkem;
         document.getElementById('edit_uraian').value = logbook.uraian;
         document.getElementById('edit_target').value = logbook.target;
 
@@ -537,7 +482,6 @@ $logbooks = CLogbook::_gi()->getById('F1D021001');
         e.preventDefault();
         const formData = new FormData(logbookEdit);
         formData.append('action', 'edit');
-
         try {
             const res = await fetch('http://localhost:8080/api/logbook.php', {
                 method: 'POST',

@@ -15,19 +15,14 @@ header('Content-Type: application/json');
 
 
 function handleInsert() {
-    $nama = "Ahmad Rizki";
-    $nim = $_GET['nim'] ?? 'F1D021001';
+    $nim = $_GET['nim'] ?? null; ;
     $tanggal = $_POST['tanggal'] ?? null;
-    $jkem = $_POST['jkem'] ?? null;
     $uraian = $_POST['uraian'] ?? null;
     $target = $_POST['target'] ?? null;
     $uploadedFiles = uploadFiles();
     $data = [
-        'seminar_id' => "1",
-        'nama' => $nama,
-        'nim' => $nim,
+        'mahasiswa_nim' => $nim,
         'tanggal' => $tanggal,
-        'jkem' => $jkem,
         'uraian' => $uraian,
         'target' => $target,
         'foto' => $uploadedFiles
@@ -56,10 +51,7 @@ function handleEdit() {
         if (!$id) throw new Exception("ID tidak ada.");
         $logbookOld = CLogbook::_gi()->getLogbookById($id);
         if (!$logbookOld) throw new Exception("Logbook tidak ditemukan!");
-
-        $seminar_id = $logbookOld['seminar_id'];
         $tanggal = $_POST['tanggal'] ?? $logbookOld['tanggal'];
-        $jkem    = $_POST['jkem'] ?? $logbookOld['jkem'];
         $uraian  = $_POST['uraian'] ?? $logbookOld['uraian'];
         $target  = $_POST['target'] ?? $logbookOld['target'];
 
@@ -85,9 +77,7 @@ function handleEdit() {
         $finalFotos = array_values($finalFotos);
 
         $data = [
-            'seminar_id' => $seminar_id,
             'tanggal' => $tanggal,
-            'jkem'    => $jkem,
             'uraian'  => $uraian,
             'target'  => $target,
             'foto'    => $finalFotos

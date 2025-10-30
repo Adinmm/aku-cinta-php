@@ -18,32 +18,30 @@ class CLogbook extends Databases {
         $this->_STH->execute([$nim]);
         return $this->_STH->fetchAll(PDO::FETCH_ASSOC);
     }
-
     public function getAll() {
         $query = "
-        SELECT 
-            l.*, 
-            s.seminar_status
-        FROM logbook l
-        LEFT JOIN seminar s ON l.seminar_id = s.seminar_id
-    ";
+       SELECT * FROM logbook;";
+        $this->_STH = $this->_DBH->prepare($query);
+        $this->_STH->execute();
 
+        return $this->_STH->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getAllMahasiswa() {
+        $query = "
+       SELECT * FROM mahasiswa;";
         $this->_STH = $this->_DBH->prepare($query);
         $this->_STH->execute();
 
         return $this->_STH->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     // Tambah logbook baru
     public function insertLogbook($data) {
-
         $foto = isset($data['foto']) && is_array($data['foto']) ? $data['foto'] : [];
-
         return $this->insert(
             'logbook',
-            ['seminar_id', 'nama', 'mahasiswa_nim', 'tanggal', 'jkem', 'uraian', 'target', 'foto'],
-            [[$data['seminar_id'], $data['nama'], $data['nim'], $data['tanggal'], $data['jkem'], $data['uraian'], $data['target'], json_encode($foto)]]
+            [ 'mahasiswa_nim', 'tanggal', 'uraian', 'target', 'foto'],
+            [[$data['mahasiswa_nim'], $data['tanggal'], $data['uraian'], $data['target'], json_encode($foto)]]
         );
     }
 
@@ -52,13 +50,12 @@ class CLogbook extends Databases {
     public function deleteLogbook($id) {
         return $this->delete('logbook', 'id', $id);
     }
+
     public function updateLogbook($id, $data) {
 
         if (isset($data['foto']) && is_array($data['foto'])) {
             $data['foto'] = json_encode($data['foto']);
         }
-
-
         return $this->update('logbook', $data, 'id', $id);
     }
 
